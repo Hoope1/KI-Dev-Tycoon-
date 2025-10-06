@@ -1,0 +1,2 @@
+# Optional developer tooling for the client build pipeline.
+# Add linting or export helpers here once needed.
