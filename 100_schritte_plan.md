@@ -8,16 +8,16 @@
 
 ## Foundations (1–20)
 
-1. [ ] **Vision & KPIs fixieren:** Zielmetriken (D1/D7/D30, ARPDAU, Crash-Rate) schriftlich festhalten.
-2. [ ] **Projektstruktur anlegen:** Monorepo mit `/client` (Unity/Godot) und `/sim` (Python) + Grund-Readme.
-3. [ ] **AGENTS.md & GDD übernehmen:** Dateien ins Repo legen, als „Source of Truth“ verankern.
-4. [ ] **Tooling einrichten:** Poetry, pre-commit, black, ruff, mypy, pytest, nox; Basiskonfiguration prüfen.
-5. [ ] **CI/CD aufsetzen:** GitHub Actions (Lint, Typing, Tests, Coverage ≥90 % Ziel), Release-Workflow skeleton.
-6. [ ] **Code-Ownership & Branching:** CODEOWNERS, Conventional Commits, Branch-Namensschema.
-7. [ ] **Determinismus-Kernel starten:** `rng.py` und `time.py` (Seed/Clock-Injection) inkl. Unit-Tests.
-8. [ ] **GameState-Gerüst:** `state.py` (immutable Snapshots) + einfache Serialisierung.
-9. [ ] **Tick-Loop & CLI:** `ki-sim run --ticks` implementieren; Smoke-Test mit Seed=42 grün.
-10. [ ] **Logging-Basis:** Strukturierte Logs (Tick, Duration, Seed); Silence-Levels konfigurierbar.
+1. [x] **Vision & KPIs fixieren:** Zielmetriken (D1/D7/D30, ARPDAU, Crash-Rate) schriftlich festhalten.
+2. [x] **Projektstruktur anlegen:** Monorepo mit `/client` (Unity/Godot) und `/sim` (Python) + Grund-Readme.
+3. [x] **AGENTS.md & GDD übernehmen:** Dateien ins Repo legen, als „Source of Truth“ verankern.
+4. [x] **Tooling einrichten:** Poetry, pre-commit, black, ruff, mypy, pytest, nox; Basiskonfiguration prüfen.
+5. [x] **CI/CD aufsetzen:** GitHub Actions (Lint, Typing, Tests, Coverage ≥90 % Ziel), Release-Workflow skeleton.
+6. [x] **Code-Ownership & Branching:** CODEOWNERS, Conventional Commits, Branch-Namensschema.
+7. [x] **Determinismus-Kernel starten:** `rng.py` und `time.py` (Seed/Clock-Injection) inkl. Unit-Tests.
+8. [x] **GameState-Gerüst:** `state.py` (immutable Snapshots) + einfache Serialisierung.
+9. [x] **Tick-Loop & CLI:** `ki-sim run --ticks` implementieren; Smoke-Test mit Seed=42 grün.
+10. [x] **Logging-Basis:** Strukturierte Logs (Tick, Duration, Seed); Silence-Levels konfigurierbar.
 11. [ ] **Config-Lader:** YAML/TOML-Loader + Pydantic-Schemas; ein Beispiel-Profil `default` bereitstellen.
 12. [ ] **Ereignisbus (EventBus):** Publish/Subscribe-Grundgerüst; leere Events für spätere Systeme.
 13. [ ] **Persistenz-Roundtrip:** `savegame.py` (JSON) + Test `state == load(save(state))`.

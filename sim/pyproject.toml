@@ -10,7 +10,6 @@ packages = [{ include = "ki_dev_tycoon", from = "src" }]
 [tool.poetry.dependencies]
 python = "^3.11"
 pydantic = "^2.9.0"
-typer = { version = "^0.12.3", extras = ["all"] }
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.3"
@@ -20,9 +19,11 @@ black = "^24.8.0"
 isort = "^5.13.2"
 mypy = "^1.11.2"
 types-requests = "^2.32.0.20240914"
+pre-commit = "^3.8.0"
+nox = "^2024.4.15"
 
 [tool.poetry.scripts]
-ki-sim = "ki_dev_tycoon.app:app"
+ki-sim = "ki_dev_tycoon.app:main"
 
 [build-system]
 requires = ["poetry-core>=1.8.0"]
