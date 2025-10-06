@@ -1,0 +1,17 @@
+; Engine configuration file.
+; Manual scaffold for KI-Dev-Tycoon client mockup.
+
+config_version=5
+
+[application]
+config/name="KI Dev Tycoon Client"
+run/main_scene="res://scenes/dashboard.tscn"
+config/features=PackedStringArray("4.2", "Forward Plus")
+
+[rendering]
+renderer/rendering_method="forward_plus"
+
+[display]
+window/size/width=1280
+window/size/height=720
+window/stretch/mode="canvas_items"

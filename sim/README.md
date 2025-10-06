@@ -28,6 +28,18 @@ poetry run ki-sim --ticks 30 --seed 42 \
 
 Das Kommando gibt einen JSON-Snapshot mit Kapital- und Reputationswerten auf stdout aus.
 
+## API-Adapter (Preview)
+
+Der optionale FastAPI-Adapter stellt unter `/state` einen deterministischen Dummy-State bereit. Er dient aktuell dazu, den Client-Mock (Schritt 15) mit strukturierten Daten zu versorgen.
+
+```bash
+poetry run uvicorn ki_dev_tycoon.api.app:app --reload
+# oder als Python-Modul:
+poetry run python -m uvicorn ki_dev_tycoon.api.app:app --reload
+```
+
+Die Antwortstruktur wird über Pydantic-DTOs in `ki_dev_tycoon/api/dto.py` beschrieben.
+
 ## Tests
 
 ```bash

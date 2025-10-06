@@ -22,8 +22,8 @@
 12. [x] **Ereignisbus (EventBus):** Publish/Subscribe-Grundgerüst; leere Events für spätere Systeme.
 13. [x] **Persistenz-Roundtrip:** `savegame.py` (JSON) + Test `state == load(save(state))`.
 14. [x] **Benchmark-Skeleton:** pytest-benchmark setuppen; Basis-Messung für Tick-Loop einfrieren.
-15. [ ] **Client-Projekt initialisieren:** Leere Szenen/Scenes (Dashboard-Mock), Build-Pipeline lauffähig.
-16. [ ] **API-Adapter (optional):** FastAPI-Stub mit `/state` (GET) → Client liest Dummy-State.
+15. [x] **Client-Projekt initialisieren:** Leere Szenen/Scenes (Dashboard-Mock), Build-Pipeline lauffähig.
+16. [x] **API-Adapter (optional):** FastAPI-Stub mit `/state` (GET) → Client liest Dummy-State.
 17. [ ] **Fehlerklassen:** Domänen-Exception-Hierarchie + zentraler Handler im Sim-Kernel.
 18. [ ] **Feature-Flags:** Remote-Config-Keypfad definieren; lokale Fallbacks implementieren.
 19. [ ] **Risikoregister aufsetzen:** Top-5 Risiken + Frühindikatoren + Response-Owner.
