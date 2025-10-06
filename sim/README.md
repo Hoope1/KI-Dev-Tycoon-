@@ -1,15 +1,14 @@
-# KI Dev Tycoon – Simulation Kernel
+# KI Dev Tycoon – Simulation Kernel (Python Support Stack)
 
-Dieses Repository enthält den deterministischen Python-Kern des Mobile-Spiels **KI Dev Tycoon**. Der Code bildet die Grundlage für weitere Ausbaustufen wie Wirtschaftssimulation, Forschungsbäume, Team-Management sowie API-Anbindung.
+Dieses Verzeichnis enthält den deterministischen Python-Simulationskern, der für Balancing-Experimente, Property-Tests und Tooling rund um den Steam-MVP von **KI Dev Tycoon** eingesetzt wird. Die produktive Implementierung erfolgt laut [`Zusatz.md`](../Zusatz.md) in Unity/C#, doch der Python-Stack bleibt für schnelle Iterationen, Datenexporte und Regressionstests bestehen.
 
 ## Aktueller Stand
 
-- Grundlegende Paketstruktur mit Poetry
-- Deterministische Zufallsquelle (`RandomSource`)
-- Tick-basierter Zeitgeber (`TickClock`)
-- Stark vereinfachte Finanzsimulation inklusive Reputationstracking
-- CLI-Befehl `ki-sim` zur Ausführung einer Beispielsimulation
-- Erste Unit-Tests für RNG und Simulation
+- Paketstruktur mit Poetry (`sim/pyproject.toml`).
+- Deterministische Zufallsquelle (`RandomSource`) und Tick-Zeitgeber (`TickClock`).
+- Vereinfachte Finanzsimulation inklusive Reputationstracking.
+- CLI-Befehl `ki-sim` zur Ausführung deterministischer Beispielsimulationen.
+- Unit- und Property-Tests für RNG, Simulation und Persistenz.
 
 ## Installation
 
@@ -30,7 +29,7 @@ Das Kommando gibt einen JSON-Snapshot mit Kapital- und Reputationswerten auf std
 
 ## API-Adapter (Preview)
 
-Der optionale FastAPI-Adapter stellt unter `/state` einen deterministischen Dummy-State bereit. Er dient aktuell dazu, den Client-Mock (Schritt 15) mit strukturierten Daten zu versorgen.
+Der optionale FastAPI-Adapter stellt unter `/state` deterministische Dummy-States bereit. Damit lassen sich UI-Prototypen oder Analyse-Tools speisen, bis der Unity-Kernel (siehe `Zusatz.md`) voll funktionsfähig ist.
 
 ```bash
 poetry run uvicorn ki_dev_tycoon.api.app:app --reload
@@ -46,7 +45,7 @@ Die Antwortstruktur wird über Pydantic-DTOs in `ki_dev_tycoon/api/dto.py` besch
 poetry run pytest -q
 ```
 
-Weitere Linting- und Typprüfungen können gemäß `pyproject.toml` ausgeführt werden.
+Weitere Linting- und Typprüfungen können gemäß `pyproject.toml` ausgeführt werden. Erkenntnisse aus den Python-Simulationen sind regelmäßig mit den Vorgaben aus `Zusatz.md` und den C#-Implementierungen zu synchronisieren (Seeds, KPIs, Formeln).
 
 ## Code-Qualität & Automatisierung
 
