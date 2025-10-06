@@ -1,6 +1,7 @@
 # AGENTS.md — Leitfaden für OpenAI‑Agenten (Python)
 
-Siehe Gameplan.md!
+Siehe Gameplan.md **und** 100_schritte_plan.md!
+> Folge dem in `100_schritte_plan.md` dokumentierten Ablauf strikt Schritt für Schritt. Markiere einzelne Schritte erst als abgeschlossen, nachdem ihre Ergebnisse umfassend getestet, dokumentiert und mit den in Gameplan.md beschriebenen Zielen abgeglichen wurden.
 > **Ziel:** Dieses Dokument macht den Python‑Code der Simulation von **KI‑Dev‑Tycoon** für AI‑Agenten (z. B. OpenAI Codex) eindeutig navigier‑ und erweiterbar. Es standardisiert Struktur, Konventionen, Tests, PR‑Abläufe und automatisierte Checks, damit AI‑Beiträge sofort lauffähig sind und Review‑Aufwand minimal bleibt.
 
 ---
