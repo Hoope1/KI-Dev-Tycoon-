@@ -23,7 +23,9 @@ def test_configure_logging_sets_level() -> None:
     assert logger.handlers  # handler installed
 
 
-def test_run_simulation_emits_structured_events(capsys: pytest.CaptureFixture[str]) -> None:
+def test_run_simulation_emits_structured_events(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
     configure_logging("INFO")
     config = SimulationConfig(
         ticks=2,
