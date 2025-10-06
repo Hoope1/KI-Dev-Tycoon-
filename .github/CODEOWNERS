@@ -1,0 +1,9 @@
+# CODEOWNERS — Automatische Reviewer-Zuweisung
+# Bitte Änderungen mit docs/CODEOWNERS synchron halten.
+
+*                 @ki-dev-tycoon/core-team
+sim/**            @ki-dev-tycoon/sim-core
+client/**         @ki-dev-tycoon/client-team
+.github/**        @ki-dev-tycoon/devops
+Gameplan.md       @ki-dev-tycoon/design
+100_schritte_plan.md @ki-dev-tycoon/production

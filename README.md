@@ -1,35 +1,37 @@
-# KI Dev Tycoon – Simulation Kernel
+# KI-Dev-Tycoon Monorepo
 
-Dieses Repository enthält den deterministischen Python-Kern des Mobile-Spiels **KI Dev Tycoon**. Der Code bildet die Grundlage für weitere Ausbaustufen wie Wirtschaftssimulation, Forschungsbäume, Team-Management sowie API-Anbindung.
+Dieses Repository bündelt den Simulations-Kernel (`/sim`) und den zukünftigen Spiel-Client (`/client`) des Projekts **KI-Dev-Tycoon**.
 
-## Aktueller Stand
+## Strukturüberblick
 
-- Grundlegende Paketstruktur mit Poetry
-- Deterministische Zufallsquelle (`RandomSource`)
-- Tick-basierter Zeitgeber (`TickClock`)
-- Stark vereinfachte Finanzsimulation inklusive Reputationstracking
-- CLI-Befehl `ki-sim run` zur Ausführung einer Beispielsimulation
-- Erste Unit-Tests für RNG und Simulation
-
-## Installation
-
-```bash
-poetry install --with dev
+```
+/README.md              # Diese Übersicht
+/100_schritte_plan.md   # Schrittweiser Ausführungsplan (verbindlich)
+/Gameplan.md            # GDD/PRD mit Vision, Systemdesign & KPIs
+/client/                # Placeholder für Unity-/Godot-Client
+  README.md             # Aktueller Stand & nächste Schritte für den Client
+/sim/                   # Python-Simulationskernel
+  README.md             # Technische Details & Nutzungshinweise
+  pyproject.toml        # Poetry-Konfiguration
+  src/                  # Python-Quellcode (Paket `ki_dev_tycoon`)
+  tests/                # Test-Suites (pytest/hypothesis)
+  docs/                 # Simulationsspezifische Dokumentation & Artefakte
 ```
 
-## Simulation ausführen
+## Erste Schritte (Simulation)
 
-```bash
-poetry run ki-sim run --ticks 30 --seed 42 \
-  --daily-active-users 5000 --arp-dau 0.12 --operating-costs 450
-```
+1. Wechsle in den Ordner `sim/`.
+2. Installiere die Python-Abhängigkeiten mit Poetry (`poetry install --with dev`).
+3. Führe Tests und Lints via `poetry run pytest`, `poetry run mypy`, `poetry run ruff check` aus.
 
-Das Kommando gibt einen JSON-Snapshot mit Kapital- und Reputationswerten auf stdout aus.
+## Erste Schritte (Client)
 
-## Tests
+*Der Client ist noch nicht initialisiert.* Sobald die Engine gewählt wurde, werden hier Setup-Anweisungen ergänzt.
 
-```bash
-poetry run pytest -q
-```
+## Weiterführende Dokumente
 
-Weitere Linting- und Typprüfungen können gemäß `pyproject.toml` ausgeführt werden.
+* `AGENT.md` – Arbeitsanweisungen & Coding-Guidelines für alle Agent:innen.
+* `Gameplan.md` – Vollständiger Produktions- und Game-Design-Plan.
+* `100_schritte_plan.md` – Priorisierte Arbeitsliste mit Abnahmekriterien.
+* `sim/docs/vision_kpis.md` – Vision & KPI-Rahmen für das Projekt.
+* `docs/contributing.md` – Commit- und Branch-Richtlinien (Conventional Commits).
