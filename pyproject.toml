@@ -1,0 +1,50 @@
+[tool.poetry]
+name = "ki-dev-tycoon"
+version = "0.1.0"
+description = "Deterministic simulation kernel for the KI Dev Tycoon mobile game."
+authors = ["KI Dev Tycoon Team <dev@ki-dev-tycoon.example>"]
+license = "MIT"
+readme = "README.md"
+packages = [{ include = "ki_dev_tycoon", from = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pydantic = "^2.9.0"
+typer = { version = "^0.12.3", extras = ["all"] }
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.3"
+hypothesis = "^6.112.1"
+ruff = "^0.6.8"
+black = "^24.8.0"
+isort = "^5.13.2"
+mypy = "^1.11.2"
+types-requests = "^2.32.0.20240914"
+
+[tool.poetry.scripts]
+ki-sim = "ki_dev_tycoon.app:app"
+
+[build-system]
+requires = ["poetry-core>=1.8.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+
+[tool.isort]
+profile = "black"
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+extend-select = ["I"]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+packages = ["ki_dev_tycoon"]
