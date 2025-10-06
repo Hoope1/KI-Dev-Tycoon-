@@ -1,0 +1,8 @@
+name: default
+description: Baseline balancing profile for smoke tests.
+ticks: 30
+seed: 42
+economy:
+  daily_active_users: 5000
+  arp_dau: 0.12
+  operating_costs: 450.0
