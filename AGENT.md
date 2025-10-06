@@ -45,65 +45,67 @@ poetry run pip-audit && poetry run bandit -r src
 * **Determinismus:** Simulationen nutzen einen injizierbaren RNG (`RandomSource`) und `TimeProvider`. Keine direkten `random.*`‑ oder `datetime.now()`‑Aufrufe in Domänenlogik.
 
 ```
-/pyproject.toml             # Build, Tools, Black/Ruff/Mypy/pytest‑Config
-/poetry.lock
-/.pre-commit-config.yaml
-/.github/workflows/ci.yml
-/Makefile or /noxfile.py    # Conveniences (optional)
-/docs/                      # Architektur‑Notizen, Glossare, ADRs
-/assets/                    # Balancing‑Daten (CSV/JSON/YAML) – vom Code lesen, nicht generieren
-/scripts/                   # Hilfsskripte (Migration, Datengenerierung)
-/src/
-  ki_dev_tycoon/
-    __init__.py
-    app.py                  # CLI‑Entrypoint (tycoon‑Loop, Szenario‑Runner)
-    config/
-      loader.py             # Laden/Validieren von YAML/TOML‑Konfigurationen
-      schemas.py            # Pydantic‑Modelle für Config/Assets
-    core/
-      time.py               # Tick‑/Kalender‑System, Zeitleisten (Ären/Hypes)
-      rng.py                # RandomSource, Seeds, Repro‑Utilities
-      events.py             # Ereignisbus, Zufalls‑/Skript‑Events (z. B. KI‑Winter)
-      state.py              # GameState, Serialisierung, Snapshots
-    economy/
-      cashflow.py           # Einnahmen/Kosten, Schulden, Zinsen, CAPEX/OPEX
-      pricing.py            # Preis‑ und Nachfragefunktionen
-      kpis.py               # Metriken (MAU, Retention, Reputation)
-    research/
-      tech_tree.py          # Forschungsbaum (Transformer, RL, Gen‑KI …)
-      unlocks.py            # Gates/Abhängigkeiten
-      training.py           # Daten/Compute/Infra‑Invest & Lernkurven‑Sim
-    projects/
-      catalogue.py          # Projekt‑/Produkt‑Typen (Chatbot, Vision, AV …)
-      simulator.py          # Erfolgschancen, Qualität, Time‑to‑Market
-      licensing.py          # Produkt vs. API/Lizenz‑Erlöse
-    team/
-      people.py             # Rollen/Skills (DS/DE/Research/Ethics)
-      productivity.py       # Synergien, Training, Burnout/Fokus
-      hiring.py             # Recruiting‑Pipelines, Kosten
-    ethics/
-      compliance.py         # Datenschutz, Bias‑Risiko, Regulatorik‑Ereignisse
-      reputation.py         # Reputationseffekte auf Nachfrage/Verträge
-    market/
-      trends.py             # Trend‑Signale, Hype‑Zyklen
-      marketing.py          # Kampagnen, Investor‑Verhandlungen
-    idle/
-      offline.py            # Offline‑Progression (Δt‑Verarbeitung, Caps)
-    api/
-      app.py                # FastAPI‑App (Read‑Only Sim‑Adapter)
-      dto.py                # Pydantic DTOs (stabile API‑Schicht)
-    persistence/
-      savegame.py           # Save/Load (JSON), Migrations
-    utils/
-      validation.py         # Eingabeprüfungen, Fehlerklassen
-      logging.py            # Strukturierte Logs
-/tests/
-  unit/                     # Modultests, schnelle Ausführung
-  property/                 # Hypothesis‑Suiten (Ökonomie/Event‑Invarianten)
-  integration/              # End‑to‑End (Szenario‑Seeds)
-  api/                      # Contract‑Tests für FastAPI
-  data/                     # Testdaten, Golden‑Snapshots
-/benchmarks/                # pytest‑benchmark‑Szenarien
+/README.md                 # Monorepo-Übersicht & Einstieg
+/client/
+  README.md               # Status & To-dos für den (zukünftigen) Unity/Godot-Client
+/sim/
+  README.md               # Technische Doku des Python-Simulationskerns
+  .pre-commit-config.yaml # Git-Hooks (Black, Ruff, isort, mypy, pytest)
+  noxfile.py              # Automationssessions (lint, typecheck, tests)
+  pyproject.toml          # Build, Tools, Black/Ruff/Mypy/pytest-Config
+  poetry.lock
+  src/
+    ki_dev_tycoon/
+      __init__.py
+      app.py              # CLI-Entrypoint (tycoon-Loop, Szenario-Runner)
+      config/
+        loader.py         # Laden/Validieren von YAML/TOML-Konfigurationen
+        schemas.py        # Pydantic-Modelle für Config/Assets
+      core/
+        time.py           # Tick-/Kalender-System, Zeitleisten (Ären/Hypes)
+        rng.py            # RandomSource, Seeds, Repro-Utilities
+        events.py         # Ereignisbus, Zufalls-/Skript-Events (z. B. KI-Winter)
+        state.py          # GameState, Serialisierung, Snapshots
+      economy/
+        cashflow.py       # Einnahmen/Kosten, Schulden, Zinsen, CAPEX/OPEX
+        pricing.py        # Preis- und Nachfragefunktionen
+        kpis.py           # Metriken (MAU, Retention, Reputation)
+      research/
+        tech_tree.py      # Forschungsbaum (Transformer, RL, Gen-KI …)
+        unlocks.py        # Gates/Abhängigkeiten
+        training.py       # Daten/Compute/Infra-Invest & Lernkurven-Sim
+      projects/
+        catalogue.py      # Projekt-/Produkt-Typen (Chatbot, Vision, AV …)
+        simulator.py      # Erfolgschancen, Qualität, Time-to-Market
+        licensing.py      # Produkt vs. API/Lizenz-Erlöse
+      team/
+        people.py         # Rollen/Skills (DS/DE/Research/Ethics)
+        productivity.py   # Synergien, Training, Burnout/Fokus
+        hiring.py         # Recruiting-Pipelines, Kosten
+      ethics/
+        compliance.py     # Datenschutz, Bias-Risiko, Regulatorik-Ereignisse
+        reputation.py     # Reputationseffekte auf Nachfrage/Verträge
+      market/
+        trends.py         # Trend-Signale, Hype-Zyklen
+        marketing.py      # Kampagnen, Investor-Verhandlungen
+      idle/
+        offline.py        # Offline-Progression (Δt-Verarbeitung, Caps)
+      api/
+        app.py            # FastAPI-App (Read-Only Sim-Adapter)
+        dto.py            # Pydantic DTOs (stabile API-Schicht)
+      persistence/
+        savegame.py       # Save/Load (JSON), Migrations
+      utils/
+        validation.py     # Eingabeprüfungen, Fehlerklassen
+        logging.py        # Strukturierte Logs
+  tests/
+    unit/                 # Modultests, schnelle Ausführung
+    property/             # Hypothesis-Suiten (Ökonomie/Event-Invarianten)
+    integration/          # End-to-End (Szenario-Seeds)
+    api/                  # Contract-Tests für FastAPI
+    data/                 # Testdaten, Golden-Snapshots
+  docs/                   # Simulationsspezifische Dokumentation & Artefakte
+/benchmarks/              # pytest-benchmark-Szenarien (optional)
 ```
 
 **Nicht editieren (durch Agenten):** `/assets/**`‑Rohdateien, Binär‑Artefakte, generierte Coverage‑/Cache‑Ordner. Änderungen an Assets **erfordern** Snapshot‑Updates & Balancing‑Checks (siehe unten).
