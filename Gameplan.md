@@ -1,6 +1,8 @@
 # KI‑Dev‑Tycoon — Produktions‑ & Game‑Design‑Plan (GDD/PRD)
 
-> **Ziel:** Vollständig ausgearbeiteter Plan für ein mobile‑fokussiertes Tycoon‑Spiel, das den Aufbau eines KI‑Unternehmens simuliert. Optimiert für kurze Sessions (5–10 Minuten), langlebige Progression, ethische Entscheidungen und Free‑to‑Play‑Monetarisierung ohne Pay‑to‑Win.
+> **Einordnung:** Dieses Dokument ergänzt [`Zusatz.md`](./Zusatz.md) und vertieft die dort definierten Leitplanken für den Steam‑MVP (Windows x64, offline, Solo‑Dev, Budget ≤ €500). Alle Angaben folgen der Paid‑Upfront‑Strategie (€5.99) ohne Online‑Pflicht.
+
+> **Ziel:** Vollständig ausgearbeiteter Plan für einen Desktop‑Tycoon, der den Aufbau eines KI‑Unternehmens simuliert. Optimiert für kurze bis mittlere Sessions (5–20 Minuten), langlebige Meta‑Progression, ethische Entscheidungen und faire Monetarisierung ohne Live‑Ops‑Abhängigkeiten.
 
 ---
 
@@ -14,16 +16,16 @@
 * Schnelle Sessions (Idle + Minispiele für Tuning), tiefe Meta‑Progression (Tech‑Tree, Reputation, Team‑Synergien).
 * „Ethik & Reputation“ als echter Gameplay‑Hebel, nicht nur Flavor.
 
-**Kern‑KPIs (Soft‑Launch‑Ziele):** D1 ≥ 35 %, D7 ≥ 12 %, D30 ≥ 4 %, ARPDAU ≥ 0,08 €, Ad‑Fill ≥ 90 %, Crash‑Rate ≤ 0,3 %.
+**Kern‑KPIs (Launch + 2 Wochen):** Wishlist→Sale CR ≥ 10 %, Refund‑Rate ≤ 8 %, ≥ 75 % positive Steam‑Reviews (n≥20), Crash‑Rate ≤ 0,3 %.
 
 ---
 
 ## 2) Zielgruppe & Plattformen
 
-* **Plattformen:** iOS & Android (Portrait).
-* **Zielgruppe:** 16–45, Tech‑affin, Casual‑bis‑Midcore‑Tycoon‑Spieler.
-* **Sitzungs‑Design:** 5–10 Minuten; Idle‑Erträge bei Abwesenheit (8–12 Stunden Cap).
-* **Barrierefreiheit:** An-/Abschaltbare Animationen, Farbblind‑Modus, skalierbare UI‑Schrift.
+* **Plattform (Launch):** Windows x64 (Steam, 16:9, Maus/Keyboard). Steam‑Deck wird als „Should“-Have getestet.
+* **Zielgruppe:** 16–45, Tech‑affin, Casual‑bis‑Midcore‑Tycoon‑Spieler:innen mit Interesse an KI‑Trends.
+* **Sitzungs‑Design:** 5–20 Minuten; Offline‑Simulation verarbeitet Abwesenheit bis ca. 12 Stunden.
+* **Barrierefreiheit:** Skalierbare UI‑Schrift (90–120 %), farbenblind‑sichere Palette, reduzierbare Animationen.
 
 ---
 
@@ -31,11 +33,11 @@
 
 ### 3.1 Core Loop
 
-1. **Projektwahl** (Thema × Zielgruppe × Plattform).
+1. **Projektwahl** (Thema × Segment × Plattform).
 2. **Ressourcen zuweisen** (Daten, Compute, Teamzeit).
-3. **Training/Entwicklung** (Idle‑Timer + Minispiele).
-4. **Release** (Produkt oder API/Lizenz) → Einnahmen + Feedback.
-5. **Reinvest** (Forschung, Team, Marketing, Infrastruktur).
+3. **Training/Entwicklung** (0,5 s Tick‑Loop + optionale Minispiele).
+4. **Release** (Produkt oder API/Lizenz) → Einnahmen + Feedback, Steam‑Achievement‑Hooks.
+5. **Reinvest** (Forschung, Team, Marketing, Infrastruktur) → Vorbereitung auf nächste Ära.
 
 ### 3.2 Meta Loop
 
@@ -46,9 +48,9 @@
 
 ### 3.3 Zeitleisten/Hypes
 
-* **Frühphase:** Klassische ML‑Aufgaben, knappe Mittel.
-* **Boom:** Cloud & Deep Learning, Venture Deals, schnelleres Wachstum.
-* **Reife:** Generative KI, Robotik, Regulierung, hohe Skalierungskosten.
+* **Frühphase:** Klassische ML‑Aufgaben, knappe Mittel, Fokus auf Break‑Even.
+* **Boom:** Cloud & Deep Learning, gesteigerte Nachfrage, Steam‑Achievement „First 1k“.
+* **Reife:** Generative KI, Regulierung, hohe Skalierungskosten, Risiken durch Events.
 
 ---
 
@@ -56,7 +58,7 @@
 
 ### 4.1 Projekte & Markt‑Fit
 
-* **Projekttypen:** Chatbot, Vision, Empfehlung, Gen‑Art, AV‑Module, Healthcare‑KI, Fin‑KI, Quanten‑KI‑Prototypen (spät).
+* **Projekttypen:** Chatbot, Vision, Empfehlung, Gen‑Art, AV‑Module, Healthcare‑KI, Fin‑KI, Quanten‑Prototypen (spät).
 * **Attribute:** Thema, Zielgruppe, Komplexität, Datenbedarf, Regulatorik‑Level, Time‑to‑Market, Risiko.
 * **Erfolgsformel (vereinfacht):**
 
@@ -68,13 +70,13 @@ Nachfrage    = BaseDemand * g(Preis, Konkurrenz) * RegulatorikCap
 
 ### 4.2 Forschung (Tech‑Tree)
 
-* **Kategorien:** Algorithmen (Transformer, RL, GNN), Anwendungen (Healthcare, Fin, NLP), Toolchain (MLOps, A/B‑Suite), Ethik (Bias‑Monitoring), Infrastruktur (GPU‑Cluster, Edge).
-* **Freischaltung:** Forschungspunkte (FP) aus Projekterfolg + Basisertrag pro Tick.
-* **Gates:** Abhängigkeiten + Zeitalter; Ethik‑Knoten reduzieren Skandalsrisiko global.
+* **Kategorien:** Algorithmen (Transformer, RL, GNN), Anwendungen (Healthcare, Fin, NLP), Toolchain (MLOps, Experimentation), Ethik (Bias‑Monitoring), Infrastruktur (GPU‑Cluster, Edge).
+* **Freischaltung:** Forschungspunkte (FP) aus Projekterfolg + Basisertrag pro Tick; Speed durch Mitarbeiter‑Skills.
+* **Gates:** Abhängigkeiten + Ära; Ethik‑Knoten reduzieren Skandalsrisiko global (Steam‑Achievement „Tier‑2 Unlocked“).
 
 ### 4.3 Team & Produktivität
 
-* **Rollen:** Data Scientist, ML‑Engineer, Backend, MLOps, Designer, PM, Ethik‑Officer.
+* **Rollen:** Data Scientist, ML‑Engineer, Backend, MLOps, Designer, PM, Ethik‑Officer (ScriptableObject‑Definitions gemäß `Zusatz.md`).
 * **Werte:** Skill (0–100), Synergie‑Tags (NLP/Vision/Infra), Moral, Burnout, Gehalt.
 * **Mechaniken:** Training ↑Skill; Crunch ↑Speed aber ↑Burnout; Diversität ↓Bias‑Risiko leicht.
 * **Office‑Perks:** Kantine, Weiterbildung, Sabbaticals → Moral‑Buffs.
@@ -93,208 +95,140 @@ Nachfrage    = BaseDemand * g(Preis, Konkurrenz) * RegulatorikCap
 * **Produkt vs. Lizenz:** Produkt = höhere Margin, volatil; Lizenz = planbar, gedeckelt.
 * **Cash‑Flow‑Regeln:** Keine negativen Kontostände jenseits Kreditlinie; Zinsen ab Schwelle.
 
-### 4.6 Marketing & Trends
+### 4.6 Go-to-Market & Trends
 
-* **Kanäle:** PR, Content, Ads, Konferenzen, Thought Leadership.
-* **Modell:** Reichweite ~ Budget^δ * Kreativitäts‑Multiplikator; PR profitiert von Reputation.
-* **Hype‑Impulse:** Zeitgesteuerte Multiplikatoren; Gegenmaßnahmen via Ethik/Transparenz.
+* **Kanäle:** Steam Discovery Queue, Devlog-Posts, Fachpresse (Tech/AI), Influencer-Streams, Wishlist-Kampagnen.
+* **Modell:** Fokus auf Wishlists → Conversion am Launch-Tag; Reputation steigert PR-Reichweite.
+* **Hype-Impulse:** Zeitalter-abhängige Nachfrage-Boosts; Ethik-/Transparenz-Investitionen dämpfen Negativtrends.
 
-### 4.7 Minispiele (kurz & skill‑basiert)
+### 4.7 Minispiele (kurz & skill-basiert)
 
-* **Parameter‑Tuning:** „Lock‑in“ Bonus‑Perks durch kurze Zielwerte (Timing/Slider).
-* **Bug‑Hunt:** Muster finden → reduziert Tech‑Debt.
-* **Pitch‑Deck:** Kartenwahl für Investor‑Meetings → bessere Terms bei Erfolg.
+* **Parameter-Tuning:** „Lock-in“ Bonus-Perks durch Timing/Slider (optional, offline spielbar).
+* **Bug-Hunt:** Muster finden → reduziert Tech-Debt, triggert Steam-Toasts.
+* **Pitch-Deck:** Kartenwahl für Investor-Meetings → bessere Terms bei Erfolg.
 
-### 4.8 Idle‑Mechanik
+### 4.8 Idle-Mechanik
 
-* **Offline‑Berechnung:**
-
-```
-Ertrag_offline = min(Cap, f(Aktive Pipelines, Subscriptions, API‑Traffic))
-Diminishing Returns nach 8–12h; täglicher Login‑Boost (einmalig)
-```
+* **Offline-Berechnung:** 0,5 s Fixed-Tick; Offline-Cap 8–12 h; analytische Formeln für große Δt (siehe `Zusatz.md`).
 
 ---
 
-## 5) Content‑Plan (Season 0 → 2)
+## 5) Milestone-Roadmap (W1–W6)
 
-| Season      | Ära/Schwerpunkt     | Neue Projekte                | Forschung                       | Events                          | Ziel                     |
-| ----------- | ------------------- | ---------------------------- | ------------------------------- | ------------------------------- | ------------------------ |
-| S0 (Launch) | Frühphase           | Chatbot, Vision, Recommender | Transformer‑Basics, MLOps I     | KI‑Winter‑Rückblick, PR‑Skandal | Onboarding, Retention    |
-| S1          | Boom (Cloud/DL)     | Gen‑Art, Speech              | RL‑Grundlagen, A/B‑Suite        | Konferenz‑Expo, Audit           | Monetarisierung/Live‑Ops |
-| S2          | Reife (Gen‑KI/Reg.) | AV‑Module, Healthcare        | Bias‑Monitoring, Red‑Team, Edge | Regulierungspaket, Leak         | Tiefe/Metagame           |
-
----
-
-## 6) Monetarisierung (F2P, fair)
-
-* **Ads:** Rewarded Video (Speed‑Boost, Soft‑Währung), Interstitials nur nach Missionen (Frequency Cap: 1/5 Min, max 4/Tag).
-* **IAP:**
-
-  * **Premium‑Währung:** „Compute‑Credits“ (z. B. 1,99 € bis 49,99 €).
-  * **Kosmetik:** Office‑Skins, Charakter‑Outfits, Themen‑UIs.
-  * **QoL‑Pässe:** Zusätzliche Save‑Slots, Automations‑Queue.
-* **Einmalkauf (No‑Ads):** 6,99–9,99 €, + Szenario „KI in der Medizin“.
-* **Fairness‑Guardrails:** Keine Pay‑Gates bei Kernprogression; Monetarisierung beschleunigt, ersetzt nicht.
+| Woche | Fokus                | Kernlieferobjekte                                          |
+| ----- | -------------------- | ---------------------------------------------------------- |
+| W1    | Projekt & Kernel     | Unity-Projekt, Tick-Loop, RNG, Save/Load, Steam-Bootstrap  |
+| W2    | Daten & Ökonomie     | ScriptableObjects, Hiring/Forschung/Ökonomie, Offline-Cap  |
+| W3    | UI First Pass        | Greybox aller Screens, Presenter, Localization-Setup       |
+| W4    | Steam & Content      | Achievements, Rich Presence, Screenshots, Store-Texte      |
+| W5    | Polish & Beta        | Balancing, Profiling, Audio, Accessibility, Beta-Feedback  |
+| W6    | Release              | Finaler Build, Store-Go-Live, Kommunikation, Hotfix-Pfad   |
 
 ---
 
-## 7) UX/UI‑Leitlinien
+## 6) Monetarisierung (Paid Upfront)
 
-* **Main Screens:** HQ‑Dashboard → Projekte → Forschung → Team → Markt → Ethik.
-* **Informationsdichte:** Karten‑Layout, Tooltips, kontextuelle Glossare.
-* **Tutorial (≤ 6 Min):** 1) Erstes Projekt 2) Training & Release 3) Forschungspunkte 4) Teamhire 5) Ethik‑Entscheidung 6) Marketing.
-* **Benachrichtigungen:** Sanft, bündelbar, stille Nachtzeiten.
+- **Preis:** €5.99 einmalig, keine Rabatte zum Launch (Wishlist-Konversion messen).
+- **Keine Ads/IAPs:** Monetarisierung erfolgt ausschließlich über den Kaufpreis.
+- **Value-Kommunikation:** „Solo-Dev, deterministische KI-Unternehmenssimulation“ + Transparenz über Updates.
+- **Achievements & Extras:** 8–12 Achievements als Mehrwert, optionale Demo (itch.io) zur Wishlist-Generierung.
+
+---
+
+## 7) UX/UI-Leitlinien
+
+- **Main Screens:** HQ-Dashboard → Projekte → Forschung → Team → Markt → Events.
+- **Informationsdichte:** Karten-Layout, Tooltips, Glossare; Controller-Support optional spätere Erweiterung.
+- **Onboarding (≤ 10 Min):** Erstes Projekt abschließen, Forschung freischalten, Hiring durchführen, Preis anpassen.
+- **Notifications:** In-Game Log & Toasts, keine Pushes; Fokus-Modus (reduzierte Animationen) optional.
 
 ---
 
 ## 8) Technik & Architektur
 
-* **Client:** Unity (C#) oder Godot (GDScript/C#), Mobile Portrait, Addressables/AssetBundles, lokal verschlüsselter Save.
-* **Sim‑Kernel (optional getrennt):** Python (siehe AGENTS.md), deterministisch, API via FastAPI/HTTP oder eingebettete Lib.
-* **Offline‑Support:** Delta‑Zeit‑Berechnung, Konfliktlösung bei Cloud‑Sync.
-* **Analytics:** Client‑Events → Backend (Batch), Remote Config/Feature‑Flags.
-* **Build‑Pipeline:** CI (GitHub Actions), Testgerätefarm, Symbol‑Upload (Crashlytics/Sentry).
+- **Client:** Unity 6 LTS, Windows x64, IL2CPP Release, Addressables lokal.
+- **Sim-Kernel:** Reines C# (`Core.Sim`), deterministisch, keine Unity-Abhängigkeiten; Python-Kernel dient als Test-Harness.
+- **Persistenz:** JSON + GZip, Versionierung mit `ISaveMigrator`.
+- **Automation:** Lokale CI (nox/pytest für Python, Unity Batchmode für Builds), kein externer Backend-Service.
 
-**Datenstruktur (Savegame, vereinfacht):**
+**Savegame (MVP):**
 
 ```json
 {
-  "version": 5,
-  "tick": 12345,
-  "rng_seed": 42,
-  "cash": 125000,
-  "reputation": 67,
-  "projects": [...],
-  "research": {"unlocked": ["transformer_basic"], "fp": 12},
-  "team": [...],
-  "market": {"hype": 0.2},
-  "ethics": {"risk": 0.08, "invest": 2}
+  "version": 1,
+  "seed": 9201531,
+  "last_time": "2025-10-06T10:00:00Z",
+  "company": {"cash": 20000, "reputation": 0.0},
+  "employees": {...},
+  "research": {...},
+  "products": {...},
+  "rng_stream": {"hiring": 12345, "events": 777}
 }
 ```
 
 ---
 
-## 9) Analytics & A/B‑Testing
+## 9) Telemetrie & Messung
 
-**Kern‑Events:** `session_start`, `tutorial_step`, `project_start/release`, `fp_gain/spend`, `ethics_event`, `reputation_change`, `ad_watch`, `iap_purchase`, `churn_flag`, `returning_user`.
-
-**Funnel‑Metriken:** Install → Tutorial Complete → Erstes Release → Forschung Spend → 24h Retention → Monetarisierungs‑Kontakt.
-**Experimente (Beispiele):** Tutorial‑Reihenfolge A/B, Rewarded‑Placement, Idle‑Cap 8 vs. 12 Std, Preisanker für IAP.
-
----
-
-## 10) Balancing‑Modell (Formeln & Parameter)
-
-**Qualität:**
-$$\text{Qualität} = k_0 + k_1\log(1+\text{Daten}) + k_2\log(1+\text{Compute}) + k_3\cdot \text{TeamSkill} - \text{TechDebt}$$
-
-**Nachfrage:**
-$$\text{Nachfrage} = B\cdot \text{Fit}(t,z)\cdot (1+H)\cdot (1+\rho/100)\cdot e^{-\lambda,Preis}$$
-
-**Skandal‑Risiko:**
-$$p_{skandal}=p_0\cdot (1-\text{EthikInvest})\cdot (1-\text{Diversität})\cdot (1+H)$$
-
-**Idle‑Ertrag:**
-$$E_{offline}=\min(Cap,; E_{tick}\cdot f(\Delta t))\quad,; f(\Delta t)=1- e^{-\mu,\Delta t}$$
-
-**Start‑Parameter (vorschlagen, Feintuning in Beta):**
-
-* (k_1=0.8, k_2=0.6, k_3=0.02, \lambda=0.15, \mu=0.12), Idle‑Cap = 10 h, HypeMod im Boom = +30 %.
+- **Kein Online-Tracking:** Keine externen Analytics oder Remote Config im MVP.
+- **Lokale Logs:** Optionale CSV-Exports für Tests, Debug-Konsole im Dev-Build.
+- **Business-Metriken:** Steam Backoffice (Sales, Refunds, Reviews) + manuelle KPI-Sheets.
 
 ---
 
-## 11) Live‑Ops & Community
+## 10) Balancing-Modell (Formeln & Parameter)
 
-* **Wöchentliche Challenges:** „Bestes Gen‑Art‑Modell“ (Seeds & Parameter vorgegeben).
-* **Monatliche Events:** Szenario‑Runs mit Leaderboard (fair, ohne P2W).
-* **Koop‑Projekte:** Gilde‑ähnliche Forschungspools (nur kosmetische Rewards).
-* **UGC‑Leichtgewicht:** Presets teilen (keine externen Daten).
+- **Qualität:** `quality = tanh(a*modelQuality + b*ln(dataQty+1) + c*infraCap)`
+- **Nachfrage:** `BaseDemand * fit(price, quality) * (1 + hype) * (1 + reputation/100)`
+- **Skandal-Risiko:** `p = base * (1 - ethicsInvest) * (1 - diversity) * (1 + hype)`
+- **Offline-Ertrag:** `min(cap, tickIncome * f(Δt))`, mit `f(Δt) = 1 - exp(-μ*Δt)`
+- **Startparameter:** `a=0.9`, `b=0.7`, `c=0.15`, `μ=0.12`, Offline-Cap = 10 h, Boom-Hype = +30 %.
 
 ---
 
-## 12) Produktionsplan (18 Wochen Soft‑Launch)
+## 11) Post-Launch Outlook
 
-**Team (Kern, FTE‑Äquivalente):** 1 Producer, 2 Gameplay, 1 Client‑UI, 1 Backend/Sim, 1 Designer, 0.5 Artist, 0.5 QA, 0.5 Data/Live‑Ops.
+- **Kostenlose Updates:** Weitere Projekttypen, Tech-Tree-Erweiterungen, zusätzliche Events.
+- **Community-Wünsche:** Quality-of-Life-Features (Controller, Mod-Support) evaluieren.
+- **Optional Demo:** itch.io Demo für zusätzliche Wishlists (nach Launch bewerten).
 
-**Milestones:**
+---
 
-* **M0 (2 Wochen):** Konzept‑Prototype (Core Loop, 1 Projekt, 1 Minispiel).
-* **M1 (6 Wochen):** Vertical Slice: 3 Projekte, kleiner Tech‑Tree, Ethik‑Event, Ads‑Stub.
-* **M2 (10 Wochen):** Content S0 fertig, Onboarding, Analytics, Crash‑Stabilität ≥ 99,7 %.
-* **M3 (14 Wochen):** Soft‑Launch (2 Länder), A/B‑Tests, Pricing‑Feinschliff.
-* **M4 (18 Wochen):** Global Launch, Season 1 live, Marketing‑Burst.
+## 12) Produktion & Ressourcen
 
-**Budget grob (18 Wochen, EUR):**
-
-* Personal ≈ € 220–280k, Art/Audio € 15k, UA/Marketing Soft‑Launch € 30k, Tools/Backend € 8k, Puffer € 20k → **Summe ≈ € 295–353k**.
+- **Team:** Solo-Dev (Design, Code, Art) + punktuelle Freelancer (Art/SFX) ≤ €150 Budget.
+- **Zeitplan:** 6 Wochen gemäß Milestone-Roadmap, tägliche Fokusblöcke (4–6 h).
+- **Werkzeuge:** Unity Personal, Inkscape, Krita, Audacity, CC0-Asset-Bibliotheken.
+- **Dokumentation:** Wöchentlicher Devlog, Fortschritt im Repo (`docs/diary/` optional).
 
 ---
 
 ## 13) QA, Sicherheit & Compliance
 
-* **QA:** Testpläne für Tutorial, Offline‑Caps, Monetarisierung, Edge‑Geräte (Low‑RAM).
-* **Automatisiert:** Unit‑/Integrationstests (Sim‑Kernel), Device‑Farm Smoke‑Runs.
-* **Datenschutz:** Minimal‑Telemetry, Opt‑in‑Dialoge, Lösch‑Anfragen im Client.
-* **Regeln:** App‑Store‑Guidelines, GDPR, Jugendschutz (12+), keine realen personenbezogenen Daten.
+- **Tests:** Unit-/Property-Tests (Kernel), Play-/Edit-Mode-Tests (Unity), Headless Runner.
+- **Manuelle QA:** Save-Rotation, Offline-Progress, Achievements, Performance (≤ 16 ms FrameTime auf Mittelklasse-PC).
+- **Datenschutz:** Keine personenbezogenen Daten; Impressum/Privacy-Hinweis in Readme/Store.
+- **Lizenzen:** CC0/CC-BY Assets korrekt attribuieren; Third-Party-Libraries dokumentieren.
 
 ---
 
-## 14) Marketing & Launch‑Strategie
+## 14) Marketing & Launch-Plan
 
-* **Pre‑Launch:** Devlog, TikTok/YouTube Shorts (Minispiele), Landing‑Page & Newsletter.
-* **Store‑Assets:** 6 Screenshots, 1 Video (20–30 s), ASO: Keywords „Tycoon, AI, Idle“.
-* **UA:** Soft‑Launch‑Kanäle (Meta, Google App‑Campaigns), Lookalikes ab D7‑Kohorten.
-* **Influencer:** Tech‑YouTuber, Indie‑Dev‑Kanäle; Pressekit mit humorvollen KI‑Bezügen.
-* **Community:** Monats‑Challenges, Discord, Transparenz über Balancing‑Änderungen.
-
----
-
-## 15) Risiko‑Register & Gegenmaßnahmen
-
-| Risiko               | Auswirkung       | Wahrscheinlichkeit | Mitigation                               |
-| -------------------- | ---------------- | -----------------: | ---------------------------------------- |
-| Balancing misslingt  | Churn            |             Mittel | Telemetrie + schnelle Hotfix‑Zyklen      |
-| P2W‑Wahrnehmung      | Negatives Rating |            Niedrig | Klare Fairness‑Leitplanken, No‑Ads‑Kauf  |
-| Gerätefragmentierung | Crashes          |             Mittel | Device‑Farm + Feature‑Fallbacks          |
-| Ethik‑Themen heikel  | PR‑Gegenwind     |            Niedrig | Humorvoll, abstrakt, keine realen Firmen |
-| Content‑Durst        | D7 stagniert     |             Mittel | Seasons + Events Roadmap                 |
+- **Pre-Launch:** Devlog-Serie, Wunschlisten-Kampagne, Newsletter/Discord-Aufbau.
+- **Store-Assets:** 6 Screenshots, 30–45 s Trailer, Capsule-Art in drei Formaten, Feature-Bullets (DE/EN).
+- **Launch-Kommunikation:** Steam-News, Social Posts (Twitter/Bluesky/Mastodon), Indie-Subreddits.
+- **Nach Launch:** Review-Antworten, Patch-Notes, Transparenz über Roadmap.
 
 ---
 
-## 16) Anhang A: Beispiel‑Tech‑Tree (Auszug)
+## 15) Risiko-Register & Mitigation
 
-```
-[Algorithmen]
-  ├─ Transformer‑Basics (FP: 5) → +5% Qualität NLP
-  ├─ RL‑Grundlagen (FP: 5)      → neue Projektklasse „Agenten“
-  └─ Diffusion‑Intro (FP: 6)    → Gen‑Art freigeschaltet
-[Toolchain]
-  ├─ MLOps I (FP: 4)            → -10% Trainingszeit
-  └─ A/B‑Suite (FP: 6)          → Marketingeffizienz +8%
-[Ethik]
-  ├─ Bias‑Monitoring (FP: 4)    → Skandal‑Risiko −15%
-  └─ Red‑Team (FP: 6)           → einmaliger „Skandal‑Blocker“/Season
-```
+| Risiko                         | Auswirkung          | Wahrscheinlichkeit | Mitigation                                                   |
+| ------------------------------ | ------------------- | -----------------: | ------------------------------------------------------------ |
+| Zeitplan rutscht               | Launch verzögert     |              Mittel | Wöchentliche Reviews, Scope kontrollieren                    |
+| Balancing unausgewogen         | Schlechte Reviews    |              Mittel | Headless-Tests, Feedback-Runden, Hotfix-Priorisierung        |
+| Performance-Probleme           | Negative Spielerfahrungen | Niedrig       | Profiling (W5), Zielplattform testen                         |
+| Steamworks-Integration fehlschlägt | Keine Achievements/Overlay | Niedrig | Frühe Implementierung (W1/W4), Fallbacks implementieren      |
+| Art-Assets nicht ausreichend   | Schwache Store-Wirkung | Mittel         | CC0-Packs prüfen, Budget-Puffer für 1–2 Premium-Packs nutzen |
 
 ---
-
-## 17) Anhang B: Beispiel‑Ereignisse
-
-* **„Datensatz‑Leak“:** –10 Reputation; Option „Ehrlicher Report“ (Kosten €), +PR‑Boost später.
-* **„Regulierungs‑Hearing“:** Bei Erfolg Reputation +8, sonst −5 & Lizenzgebühren +2 % für 30 Tage.
-* **„Konferenz‑Best Paper“:** Sofort FP +5; Marketing‑Push Rabatt.
-
----
-
-## 18) Nächste Schritte (konkret)
-
-1. Feasibility‑Prototype (M0): Core Loop + 1 Minispiel + 1 Ethik‑Event.
-2. KPI‑Instrumentierung früh integrieren.
-3. Content‑Pipelines & Remote‑Config vorbereiten (S0/S1).
-4. Soft‑Launch‑Märkte auswählen (z. B. CAN/NZ/SCAND).
-5. Usability‑Tests mit 10–15 Probanden (Think‑Aloud) vor M1.
-
----
-
-> **Erfolgsmesser:** Erreichen der Soft‑Launch‑KPIs, stabile Crash‑Rate, positive Store‑Ratings (≥ 4,3), gesunder Mix aus Ads/IAP. Der Plan unterstützt schnelle Iteration, ethisch sinnvolle Entscheidungen und langfristige Content‑Erweiterbarkeit.
