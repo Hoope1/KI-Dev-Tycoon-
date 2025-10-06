@@ -18,9 +18,9 @@
 8. [x] **GameState-Gerüst:** `state.py` (immutable Snapshots) + einfache Serialisierung.
 9. [x] **Tick-Loop & CLI:** `ki-sim run --ticks` implementieren; Smoke-Test mit Seed=42 grün.
 10. [x] **Logging-Basis:** Strukturierte Logs (Tick, Duration, Seed); Silence-Levels konfigurierbar.
-11. [ ] **Config-Lader:** YAML/TOML-Loader + Pydantic-Schemas; ein Beispiel-Profil `default` bereitstellen.
-12. [ ] **Ereignisbus (EventBus):** Publish/Subscribe-Grundgerüst; leere Events für spätere Systeme.
-13. [ ] **Persistenz-Roundtrip:** `savegame.py` (JSON) + Test `state == load(save(state))`.
+11. [x] **Config-Lader:** YAML/TOML-Loader + Pydantic-Schemas; ein Beispiel-Profil `default` bereitstellen.
+12. [x] **Ereignisbus (EventBus):** Publish/Subscribe-Grundgerüst; leere Events für spätere Systeme.
+13. [x] **Persistenz-Roundtrip:** `savegame.py` (JSON) + Test `state == load(save(state))`.
 14. [ ] **Benchmark-Skeleton:** pytest-benchmark setuppen; Basis-Messung für Tick-Loop einfrieren.
 15. [ ] **Client-Projekt initialisieren:** Leere Szenen/Scenes (Dashboard-Mock), Build-Pipeline lauffähig.
 16. [ ] **API-Adapter (optional):** FastAPI-Stub mit `/state` (GET) → Client liest Dummy-State.

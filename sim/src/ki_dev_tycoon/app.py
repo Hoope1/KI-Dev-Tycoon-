@@ -12,7 +12,14 @@ from typing import Optional, Sequence
 
 from pydantic import BaseModel, Field
 
-from ki_dev_tycoon.core import RandomSource, TickClock
+from ki_dev_tycoon.core import (
+    EventBus,
+    RandomSource,
+    SimulationCompleted,
+    SimulationStarted,
+    TickClock,
+    TickProcessed,
+)
 from ki_dev_tycoon.core.state import GameState
 from ki_dev_tycoon.economy import CashflowParameters, compute_daily_cash_delta
 from ki_dev_tycoon.utils.logging import configure_logging, get_logger
@@ -41,13 +48,17 @@ class SimulationResult(BaseModel):
 
 
 def run_simulation(
-    config: SimulationConfig, logger: Optional[logging.Logger] = None
+    config: SimulationConfig,
+    logger: Optional[logging.Logger] = None,
+    event_bus: Optional[EventBus] = None,
 ) -> SimulationResult:
     if config.ticks <= 0:
         msg = "Simulation requires at least one tick"
         raise ValueError(msg)
 
     sim_logger = logger or get_logger("simulation")
+    if event_bus is not None:
+        event_bus.publish(SimulationStarted(seed=config.seed))
     rng = RandomSource(seed=config.seed)
     clock = TickClock()
     state = GameState(tick=0, cash=0.0, reputation=50.0)
@@ -62,6 +73,8 @@ def run_simulation(
             sim_logger.debug(
                 "simulation.tick", extra={"tick": state.tick, "seed": config.seed}
             )
+        if event_bus is not None:
+            event_bus.publish(TickProcessed(tick=state.tick))
         cash_delta = compute_daily_cash_delta(parameters)
         state = state.apply_cash_delta(cash_delta)
 
@@ -79,6 +92,9 @@ def run_simulation(
             "duration_ms": round(duration_ms, 2),
         },
     )
+
+    if event_bus is not None:
+        event_bus.publish(SimulationCompleted(tick=state.tick))
 
     return SimulationResult(
         final_tick=state.tick,
