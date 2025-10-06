@@ -10,10 +10,12 @@ packages = [{ include = "ki_dev_tycoon", from = "src" }]
 [tool.poetry.dependencies]
 python = "^3.11"
 pydantic = "^2.9.0"
+pyyaml = "^6.0.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.3"
 hypothesis = "^6.112.1"
+pytest-benchmark = "^4.0.0"
 ruff = "^0.6.8"
 black = "^24.8.0"
 isort = "^5.13.2"
