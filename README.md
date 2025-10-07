@@ -28,6 +28,13 @@ Dieses Repository bündelt alle Assets für die Solo-MVP-Umsetzung von **KI-Dev-
 3. Führe Tests und Lints via `poetry run pytest`, `poetry run mypy`, `poetry run ruff check` aus.
 4. Starte die Headless-Simulation über `poetry run ki-sim run --ticks 365 --seed 42`.
 
+### Neue Wirtschaftssysteme & Datenquellen
+
+- Balancing-Daten liegen unter [`assets/`](./assets) und werden über Pydantic-Schemata validiert (`roles.yaml`, `products.yaml`, `markets.yaml`, `research.yaml`, `events.yaml`).
+- Der Simulationskern lädt diese Assets beim Start, erstellt deterministische RNG-Streams pro Subsystem (Hiring, Forschung, Nachfrage, Reputation) und hält Team-, Produkt- und Forschungszustände persistent.
+- Savegames (`sim/src/ki_dev_tycoon/persistence/savegame.py`) sind auf Version 2 gehoben und enthalten Team, Produkte, Forschung sowie Markt-Adoption. Ältere Saves (v1) werden automatisch migriert.
+- KPI-Exports lassen sich headless über `poetry run ki-sim export --seed 42 --output reports/kpi.csv` erzeugen; die CSV enthält 30 Ticks mit Kennzahlen zu Cash, Reputation, Umsatz, Adoption und Durchschnittsqualität.
+
 ## Erste Schritte (Python-Frontend)
 
 1. Lies [`app/README.md`](app/README.md) für den Aufbau des Textual-Frontends.

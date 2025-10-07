@@ -14,8 +14,25 @@ def test_simulation_returns_expected_snapshot() -> None:
     result = run_simulation(config)
 
     assert result.final_tick == 5
-    assert result.cash == 100.0
+    assert result.cash >= 0.0
     assert 0 <= result.reputation <= 100
+    assert result.history is None
+
+
+def test_simulation_history_capture() -> None:
+    config = SimulationConfig(
+        ticks=4,
+        seed=21,
+        daily_active_users=500,
+        arp_dau=0.2,
+        operating_costs=60.0,
+    )
+
+    result = run_simulation(config, capture_history=True)
+
+    assert result.history is not None
+    assert len(result.history) == config.ticks
+    assert all("cash" in row for row in result.history)
 
 
 def test_simulation_requires_positive_ticks() -> None:

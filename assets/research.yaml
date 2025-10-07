@@ -1,0 +1,19 @@
+- id: analytics_pipeline
+  name: Analytics Pipeline Optimisation
+  cost: 10
+  unlocks:
+    quality_bonus: 0.05
+  prerequisites: []
+- id: adaptive_agents
+  name: Adaptive Agents
+  cost: 14
+  unlocks:
+    demand_bonus: 0.05
+  prerequisites:
+    - analytics_pipeline
+- id: marketing_insights
+  name: Marketing Insights
+  cost: 8
+  unlocks:
+    training_bonus: 0.04
+  prerequisites: []

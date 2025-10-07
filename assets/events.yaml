@@ -1,0 +1,15 @@
+- id: customer_referral
+  name: Customer Referral Wave
+  weight: 1.0
+  effects:
+    demand_multiplier: 1.1
+- id: infrastructure_outage
+  name: Infrastructure Outage
+  weight: 0.3
+  effects:
+    quality_penalty: 0.05
+- id: press_award
+  name: Industry Press Award
+  weight: 0.2
+  effects:
+    reputation_bonus: 5.0

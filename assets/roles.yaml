@@ -1,0 +1,18 @@
+- id: engineer
+  name: Software Engineer
+  salary: 120.0
+  hiring_difficulty: 0.35
+  training_rate: 0.04
+  productivity: 0.6
+- id: data_scientist
+  name: Data Scientist
+  salary: 140.0
+  hiring_difficulty: 0.45
+  training_rate: 0.03
+  productivity: 0.55
+- id: marketer
+  name: Product Marketer
+  salary: 90.0
+  hiring_difficulty: 0.25
+  training_rate: 0.05
+  productivity: 0.4

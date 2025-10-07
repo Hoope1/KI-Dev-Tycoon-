@@ -1,0 +1,16 @@
+- id: analytics_suite
+  name: Analytics Suite
+  target_market: enterprise_ai
+  base_quality: 0.45
+  base_price: 49.0
+  required_roles:
+    engineer: 2
+    data_scientist: 1
+- id: onboarding_bot
+  name: Onboarding Bot
+  target_market: sme_automation
+  base_quality: 0.4
+  base_price: 19.0
+  required_roles:
+    engineer: 1
+    marketer: 1
