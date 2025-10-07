@@ -4,28 +4,35 @@ Dieses Verzeichnis enthält den deterministischen Python-Simulationskern, der f�
 
 ## Aktueller Stand
 
-- Paketstruktur mit Poetry (`sim/pyproject.toml`).
-- Deterministische Zufallsquelle (`RandomSource`) und Tick-Zeitgeber (`TickClock`).
-- Ökonomische Module (Cashflow, Nachfrage, Reputation) + Forschung/Hiring.
-- CLI-Befehl `ki-sim` zur Ausführung deterministischer Beispielsimulationen.
-- Unit-, Property- und Integrationstests für RNG, Simulation, Persistenz.
+- Typer-basierte CLI (`ki-sim run …`) als Einstiegspunkt für deterministische Simulationen.
+- TickLoop-Komponente mit 0,5 s-Fixschritt und injizierbaren `TimeProvider`-/`RandomSource`-Instanzen.
+- Persistenz über Pydantic-Modelle (`SavegameModel`) mit zstd-Kompression.
+- Unit- und Property-Tests für RNG, TickLoop, Simulation und Persistenz (Hypothesis-basiert).
 
 ## Installation
 
 ```bash
 poetry install --with dev
+pre-commit install
 ```
+
+Die Pre-Commit-Hooks im Repo-Root (`.pre-commit-config.yaml`) führen u. a. `ruff`, `black`, `isort`, `mypy`, `pytest`, `bandit`, `pip-audit`, `codespell`, `markdownlint` und `shellcheck` aus.
 
 ## Simulation ausführen
 
 ```bash
-poetry run ki-sim --ticks 30 --seed 42 \
+poetry run ki-sim run --ticks 30 --seed 42 \
   --daily-active-users 5000 --arp-dau 0.12 --operating-costs 450
 # Optional: detaillierte Tick-Ausgaben aktivieren
-# poetry run ki-sim --ticks 5 --log-level DEBUG
+# poetry run ki-sim run --ticks 5 --log-level DEBUG
 ```
 
-Das Kommando gibt einen JSON-Snapshot mit Kapital- und Reputationswerten auf stdout aus.
+Das Kommando gibt einen JSON-Snapshot mit Kapital- und Reputationswerten auf stdout aus oder schreibt die Datei via `--output` auf die Festplatte. Der zugrunde liegende `run_simulation`-Pfad injiziert Clock/RNG-Factories und nutzt die neue TickLoop.
+
+## Tick-Loop & Persistenz
+
+- `ki_dev_tycoon.core.loop.TickLoop` kapselt den 0,5 s-Zeitakkumulator und erlaubt Tests/Simulationen mit deterministischen Zeitquellen.
+- Savegames werden als zstd-komprimierte JSON-Payload (`SavegameModel`) gespeichert und lassen sich über `encode_savegame`/`decode_savegame` roundtrippen.
 
 ## API-Adapter (optional)
 
@@ -51,7 +58,6 @@ Weitere Linting- und Typprüfungen können gemäß `pyproject.toml` und `noxfile
 
 ## Code-Qualität & Automatisierung
 
-- `pre-commit install` aktiviert lokale Hooks (black, isort, ruff, mypy, pytest).
 - `nox -l` listet verfügbare Sessions.
 - `nox -s lint typecheck tests` führt alle Kernprüfungen aus.
 - `nox -s build` erzeugt PyInstaller-Smoke-Builds (siehe `app/tools`).

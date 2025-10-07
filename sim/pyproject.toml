@@ -10,7 +10,9 @@ packages = [{ include = "ki_dev_tycoon", from = "src" }]
 [tool.poetry.dependencies]
 python = "^3.11"
 pydantic = "^2.9.0"
+typer = "^0.12.5"
 pyyaml = "^6.0.2"
+zstandard = "^0.22.0"
 fastapi = "^0.115.0"
 
 [tool.poetry.group.dev.dependencies]

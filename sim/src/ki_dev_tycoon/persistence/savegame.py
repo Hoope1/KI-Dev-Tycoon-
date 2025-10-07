@@ -1,82 +1,117 @@
-"""Serialization helpers for the immutable :class:`~ki_dev_tycoon.core.state.GameState`."""
+"""Serialization helpers for :class:`~ki_dev_tycoon.core.state.GameState`."""
 
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
 
+import zstandard as zstd
+from pydantic import BaseModel, Field, ValidationError
+
 from ki_dev_tycoon.core.state import GameState
+from ki_dev_tycoon.persistence.errors import SaveGameError
+from ki_dev_tycoon.persistence.migrations import CURRENT_VERSION, migrate_payload
 
-CURRENT_VERSION = 1
-
-
-class SaveGameError(RuntimeError):
-    """Raised when a savegame cannot be parsed or validated."""
+ZSTD_LEVEL = 7
 
 
-@dataclass(slots=True, frozen=True)
-class SaveGame:
-    """Container representing an encoded savegame."""
+class GameStateModel(BaseModel):
+    """Pydantic representation of the immutable :class:`GameState`."""
 
-    state: GameState
-    version: int = CURRENT_VERSION
-
-    def to_dict(self) -> dict[str, Any]:
-        return {"version": self.version, "state": self.state.to_dict()}
+    tick: int = Field(ge=0)
+    cash: float
+    reputation: float = Field(ge=0.0, le=100.0)
 
     @classmethod
-    def from_dict(cls, payload: Mapping[str, Any]) -> "SaveGame":
-        try:
-            version = int(payload["version"])
-            raw_state = payload["state"]
-        except KeyError as exc:  # pragma: no cover - defensive guard
-            msg = "Malformed savegame payload"
-            raise SaveGameError(msg) from exc
+    def from_state(cls, state: GameState) -> "GameStateModel":
+        """Create a model instance from the domain state."""
 
-        if version != CURRENT_VERSION:
-            msg = f"Unsupported savegame version: {version}"
-            raise SaveGameError(msg)
-        if not isinstance(raw_state, Mapping):
-            msg = "Savegame payload must contain a state mapping"
-            raise SaveGameError(msg)
-        return cls(state=GameState.from_dict(raw_state), version=version)
+        return cls.model_validate(state.to_dict())
+
+    def to_state(self) -> GameState:
+        """Convert the model back into the immutable domain object."""
+
+        return GameState(
+            tick=int(self.tick), cash=float(self.cash), reputation=float(self.reputation)
+        )
 
 
-def encode_savegame(save: SaveGame) -> str:
-    """Return a canonical JSON representation for ``save``."""
+class SavegameModel(BaseModel):
+    """Pydantic model representing the canonical savegame payload."""
 
-    return json.dumps(save.to_dict(), separators=(",", ":"), sort_keys=True)
+    version: int = Field(default=CURRENT_VERSION)
+    state: GameStateModel
+
+    @classmethod
+    def from_state(cls, state: GameState) -> "SavegameModel":
+        """Create a savegame model from an immutable :class:`GameState`."""
+
+        return cls(version=CURRENT_VERSION, state=GameStateModel.from_state(state))
+
+    def to_state(self) -> GameState:
+        """Return the underlying :class:`GameState`."""
+
+        return self.state.to_state()
+
+    def to_dict(self) -> Mapping[str, Any]:
+        """Return a deterministic mapping representation."""
+
+        return self.model_dump()
 
 
-def decode_savegame(serialised: str) -> SaveGame:
-    """Parse ``serialised`` JSON into a :class:`SaveGame`."""
+def encode_savegame(save: SavegameModel, *, compression_level: int = ZSTD_LEVEL) -> bytes:
+    """Return a compressed binary representation for ``save``."""
+
+    payload = json.dumps(
+        save.to_dict(), separators=(",", ":"), sort_keys=True
+    ).encode("utf-8")
+    compressor = zstd.ZstdCompressor(level=compression_level)
+    return compressor.compress(payload)
+
+
+def decode_savegame(serialised: bytes) -> SavegameModel:
+    """Parse ``serialised`` bytes into a :class:`SavegameModel`."""
+
+    decompressor = zstd.ZstdDecompressor()
+    try:
+        buffer = decompressor.decompress(serialised)
+    except zstd.ZstdError as exc:
+        msg = "Failed to decompress savegame payload"
+        raise SaveGameError(msg) from exc
 
     try:
-        payload = json.loads(serialised)
-    except json.JSONDecodeError as exc:
-        msg = "Failed to decode savegame JSON"
+        data = json.loads(buffer.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        msg = "Failed to decode savegame JSON payload"
         raise SaveGameError(msg) from exc
-    if not isinstance(payload, dict):
+
+    if not isinstance(data, Mapping):
         msg = "Savegame JSON must decode into an object"
         raise SaveGameError(msg)
-    return SaveGame.from_dict(payload)
+
+    migrated = migrate_payload(data)
+
+    try:
+        return SavegameModel.model_validate(migrated)
+    except ValidationError as exc:
+        msg = "Savegame payload failed validation"
+        raise SaveGameError(msg) from exc
 
 
-def save_game(path: Path, state: GameState) -> None:
+def save_game(path: Path, state: GameState, *, compression_level: int = ZSTD_LEVEL) -> None:
     """Write ``state`` to ``path`` using the canonical save format."""
 
-    payload = encode_savegame(SaveGame(state=state))
-    path.write_text(payload + "\n", encoding="utf-8")
+    payload = encode_savegame(SavegameModel.from_state(state), compression_level=compression_level)
+    path.write_bytes(payload)
 
 
 def load_game(path: Path) -> GameState:
     """Load a :class:`GameState` snapshot from ``path``."""
 
     try:
-        buffer = path.read_text(encoding="utf-8")
+        buffer = path.read_bytes()
     except OSError as exc:  # pragma: no cover - propagated to caller
         msg = f"Failed to read savegame at {path}"
         raise SaveGameError(msg) from exc
-    return decode_savegame(buffer).state
+    return decode_savegame(buffer).to_state()

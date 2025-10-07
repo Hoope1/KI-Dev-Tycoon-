@@ -13,6 +13,11 @@ class TimeProvider:
 
         raise NotImplementedError
 
+    def advance(self, steps: int = 1) -> int:
+        """Advance the provider by ``steps`` ticks and return the new tick."""
+
+        raise NotImplementedError
+
 
 @dataclass(slots=True)
 class TickClock(TimeProvider):
@@ -45,3 +50,8 @@ class FrozenTime(TimeProvider):
         """Return the frozen tick value without modification."""
 
         return self.tick
+
+    def advance(self, steps: int = 1) -> int:
+        """Frozen time cannot advance; raising an explicit error."""
+
+        raise ValueError("FrozenTime cannot advance")

@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
-from .savegame import (
-    SaveGame,
-    SaveGameError,
+from ki_dev_tycoon.persistence.errors import SaveGameError
+from ki_dev_tycoon.persistence.savegame import (
+    GameStateModel,
+    SavegameModel,
     decode_savegame,
     encode_savegame,
     load_game,
@@ -12,7 +13,8 @@ from .savegame import (
 )
 
 __all__ = [
-    "SaveGame",
+    "GameStateModel",
+    "SavegameModel",
     "SaveGameError",
     "decode_savegame",
     "encode_savegame",

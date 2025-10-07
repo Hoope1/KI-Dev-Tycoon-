@@ -1,14 +1,11 @@
-"""CLI entrypoints for running deterministic simulations."""
+"""Execution layer for deterministic simulation runs."""
 
 from __future__ import annotations
 
-import argparse
-import json
 import logging
 import time
 from dataclasses import dataclass
-from pathlib import Path
-from typing import Optional, Sequence
+from typing import Callable, Optional, Sequence
 
 from pydantic import BaseModel, Field
 
@@ -20,13 +17,21 @@ from ki_dev_tycoon.core import (
     TickClock,
     TickProcessed,
 )
+from ki_dev_tycoon.core.loop import TickLoop
+from ki_dev_tycoon.core.time import TimeProvider
 from ki_dev_tycoon.core.state import GameState
 from ki_dev_tycoon.economy import CashflowParameters, compute_daily_cash_delta
-from ki_dev_tycoon.utils.logging import configure_logging, get_logger
+from ki_dev_tycoon.utils.logging import get_logger
+
+ClockFactory = Callable[[], TimeProvider]
+RandomFactory = Callable[[int], RandomSource]
+TickLoopFactory = Callable[[TimeProvider, RandomSource], TickLoop]
 
 
 @dataclass(slots=True)
 class SimulationConfig:
+    """Configuration container for deterministic simulation runs."""
+
     ticks: int
     seed: int
     daily_active_users: int
@@ -34,6 +39,8 @@ class SimulationConfig:
     operating_costs: float
 
     def to_cashflow(self) -> CashflowParameters:
+        """Return the immutable cashflow parameters."""
+
         return CashflowParameters(
             daily_active_users=self.daily_active_users,
             arp_dau=self.arp_dau,
@@ -42,34 +49,56 @@ class SimulationConfig:
 
 
 class SimulationResult(BaseModel):
+    """Result payload exposed by the CLI layer."""
+
     final_tick: int = Field(description="Tick number after the simulation finished")
     cash: float = Field(description="Final company cash reserves in Euro")
     reputation: float = Field(description="Reputation score in range [0, 100]")
 
 
+def _default_tick_loop(clock: TimeProvider, rng: RandomSource) -> TickLoop:
+    """Instantiate the default tick loop for the simulation."""
+
+    return TickLoop(clock=clock, rng=rng)
+
+
 def run_simulation(
     config: SimulationConfig,
+    *,
     logger: Optional[logging.Logger] = None,
     event_bus: Optional[EventBus] = None,
+    clock_factory: ClockFactory | None = None,
+    rng_factory: RandomFactory | None = None,
+    tick_loop_factory: TickLoopFactory | None = None,
 ) -> SimulationResult:
+    """Execute the deterministic simulation using the configured providers."""
+
     if config.ticks <= 0:
         msg = "Simulation requires at least one tick"
         raise ValueError(msg)
 
     sim_logger = logger or get_logger("simulation")
+    clock_provider = clock_factory or TickClock
+    rng_provider = rng_factory or RandomSource
+    loop_provider = tick_loop_factory or _default_tick_loop
+
+    clock = clock_provider()
+    rng = rng_provider(config.seed)
+    loop = loop_provider(clock, rng)
+
     if event_bus is not None:
         event_bus.publish(SimulationStarted(seed=config.seed))
-    rng = RandomSource(seed=config.seed)
-    clock = TickClock()
-    state = GameState(tick=0, cash=0.0, reputation=50.0)
+
+    state = GameState(tick=clock.current_tick(), cash=0.0, reputation=50.0)
     parameters = config.to_cashflow()
+
     sim_logger.info(
         "simulation.start", extra={"seed": config.seed, "ticks": config.ticks}
     )
     start_time = time.perf_counter()
 
-    for _ in range(config.ticks):
-        clock.advance()
+    def process_tick(_: int, tick_rng: RandomSource) -> None:
+        nonlocal state
         state = state.advance_tick(clock)
         if sim_logger.isEnabledFor(logging.DEBUG):
             sim_logger.debug(
@@ -77,13 +106,23 @@ def run_simulation(
             )
         if event_bus is not None:
             event_bus.publish(TickProcessed(tick=state.tick))
+
         cash_delta = compute_daily_cash_delta(parameters)
         state = state.apply_cash_delta(cash_delta)
 
-        # Reputation drifts slowly towards success or failure using deterministic jitter.
         direction = 1 if cash_delta >= 0 else -1
-        jitter = (rng.random() - 0.5) * 0.2
+        jitter = (tick_rng.random() - 0.5) * 0.2
         state = state.apply_reputation_delta(direction * 0.5 + jitter)
+
+    processed_ticks = 0
+    while processed_ticks < config.ticks:
+        processed = loop.advance_by(loop.tick_duration, process_tick)
+        if processed == 0:
+            processed = loop.advance_by(loop.tick_duration, process_tick)
+            if processed == 0:
+                msg = 'TickLoop failed to advance the simulation tick'
+                raise RuntimeError(msg)
+        processed_ticks += processed
 
     duration_ms = (time.perf_counter() - start_time) * 1000
     sim_logger.info(
@@ -105,84 +144,13 @@ def run_simulation(
     )
 
 
-def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
-        prog="ki-sim",
-        description="Run KI Dev Tycoon backend simulations deterministically.",
-    )
-    parser.add_argument(
-        "--ticks",
-        type=int,
-        default=30,
-        help="Number of simulated days to process.",
-    )
-    parser.add_argument(
-        "--seed",
-        type=int,
-        default=42,
-        help="Deterministic random seed used for RNG initialisation.",
-    )
-    parser.add_argument(
-        "--daily-active-users",
-        type=int,
-        default=5_000,
-        help="Active users per day in the simulation.",
-    )
-    parser.add_argument(
-        "--arp-dau",
-        type=float,
-        default=0.12,
-        help="Average revenue per daily active user in Euro.",
-    )
-    parser.add_argument(
-        "--operating-costs",
-        type=float,
-        default=450.0,
-        help="Daily operating costs in Euro.",
-    )
-    parser.add_argument(
-        "-o",
-        "--output",
-        type=Path,
-        default=None,
-        metavar="PATH",
-        help="Optional path to write the JSON result to.",
-    )
-    parser.add_argument(
-        "--log-level",
-        default="INFO",
-        choices=["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"],
-        help="Logging verbosity for the simulation run.",
-    )
-    return parser
-
-
 def main(argv: Optional[Sequence[str]] = None) -> int:
     """CLI entrypoint used by the ``ki-sim`` script."""
 
-    parser = build_parser()
-    args = parser.parse_args(argv)
-    configure_logging(args.log_level)
-    sim_logger = get_logger("simulation")
+    from ki_dev_tycoon.cli.sim import run_cli
 
-    config = SimulationConfig(
-        ticks=args.ticks,
-        seed=args.seed,
-        daily_active_users=args.daily_active_users,
-        arp_dau=args.arp_dau,
-        operating_costs=args.operating_costs,
-    )
-    result = run_simulation(config, logger=sim_logger)
-    payload = json.dumps(result.model_dump(), indent=2)
-
-    if args.output is None:
-        print(payload)
-    else:
-        args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(payload + "\n", encoding="utf-8")
-
-    return 0
+    return run_cli(argv)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover - manual execution guard
     raise SystemExit(main())
