@@ -1,0 +1,15 @@
+{
+  "title": "KI Dev Tycoon",
+  "genres": ["Strategy", "Simulation", "Management"],
+  "platforms": ["Windows"],
+  "languages": ["de", "en"],
+  "age_rating": "12+",
+  "modes": ["Singleplayer"],
+  "tags": ["Deterministic", "Tycoon", "AI", "Indie"],
+  "screenshot_seeds": {
+    "dashboard": {"tick": 24, "seed": 42},
+    "team": {"tick": 18, "seed": 42},
+    "research": {"tick": 30, "seed": 99},
+    "events": {"tick": 12, "seed": 1337}
+  }
+}

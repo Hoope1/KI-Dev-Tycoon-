@@ -36,3 +36,18 @@ class SimulationStateDTO(BaseModel):
         default_factory=list,
         description="Subset of projects visible on the dashboard.",
     )
+    achievements: list["AchievementDTO"] = Field(
+        default_factory=list,
+        description="Unlocked achievements for the current state.",
+    )
+
+
+class AchievementDTO(BaseModel):
+    """Representation of an unlocked achievement."""
+
+    model_config = ConfigDict(frozen=True)
+
+    id: str = Field(..., description="Stable identifier of the achievement.")
+    name: str = Field(..., description="Localized display name")
+    description: str = Field(..., description="User-facing description text")
+    unlocked_tick: int = Field(..., ge=0, description="Tick when the achievement was unlocked.")

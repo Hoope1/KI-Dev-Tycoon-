@@ -121,6 +121,16 @@ class EventLogEntry:
 
 
 @dataclass(slots=True, frozen=True)
+class AchievementViewModel:
+    """Simplified projection of an unlocked achievement."""
+
+    achievement_id: str
+    name: str
+    description: str
+    unlocked_tick: int
+
+
+@dataclass(slots=True, frozen=True)
 class UiState:
     """Complete UI state object consumed by the Textual app."""
 
@@ -130,3 +140,4 @@ class UiState:
     products: tuple[ProductViewModel, ...]
     markets: tuple[MarketViewModel, ...]
     events: tuple[EventLogEntry, ...]
+    achievements: tuple[AchievementViewModel, ...]

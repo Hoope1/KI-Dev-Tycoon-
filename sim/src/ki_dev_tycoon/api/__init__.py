@@ -3,6 +3,6 @@
 from __future__ import annotations
 
 from .app import app, create_app
-from .dto import SimulationStateDTO
+from .dto import AchievementDTO, SimulationStateDTO
 
-__all__ = ["app", "create_app", "SimulationStateDTO"]
+__all__ = ["app", "create_app", "SimulationStateDTO", "AchievementDTO"]

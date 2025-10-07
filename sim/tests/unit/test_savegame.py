@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 import zstandard as zstd
 
+from ki_dev_tycoon.achievements import AchievementSnapshot
 from ki_dev_tycoon.core.state import (
     GameState,
     ProductState,
@@ -87,3 +88,21 @@ def test_migrate_rejects_unknown_version() -> None:
 
     with pytest.raises(SaveGameError):
         decode_savegame(payload)
+
+
+def test_achievements_survive_roundtrip() -> None:
+    state = _state().add_achievements(
+        (
+            AchievementSnapshot(
+                id="cash_milestone",
+                name="First Funding",
+                description="Reach 50k cash",
+                unlocked_tick=10,
+            ),
+        )
+    )
+    model = GameStateModel.from_state(state)
+
+    assert model.achievements[0].id == "cash_milestone"
+    restored = model.to_state()
+    assert restored.achievements == state.achievements

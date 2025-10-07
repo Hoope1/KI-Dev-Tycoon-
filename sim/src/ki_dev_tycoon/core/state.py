@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
-from typing import Any, Dict, Iterable, Mapping, Sequence
+from dataclasses import dataclass, field, replace
+from typing import TYPE_CHECKING, Any, Dict, Iterable, Mapping, Sequence
 
 from ki_dev_tycoon.core.time import TimeProvider
+
+if TYPE_CHECKING:
+    from ki_dev_tycoon.achievements import AchievementSnapshot
 
 
 def _clamp(value: float, lower: float, upper: float) -> float:
@@ -188,6 +191,7 @@ class GameState:
     team: TeamState
     products: tuple[ProductState, ...]
     research: ResearchState
+    achievements: tuple["AchievementSnapshot", ...] = field(default_factory=tuple)
 
     def advance_tick(self, clock: TimeProvider) -> "GameState":
         """Return a new snapshot aligned with ``clock``."""
@@ -219,6 +223,24 @@ class GameState:
     def update_team(self, team: TeamState) -> "GameState":
         return replace(self, team=team)
 
+    def add_achievements(
+        self, achievements: Iterable["AchievementSnapshot"]
+    ) -> "GameState":
+        """Return a new snapshot with ``achievements`` appended if new."""
+
+        achievements = tuple(achievements)
+        if not achievements:
+            return self
+        known_ids = {achievement.id for achievement in self.achievements}
+        new_items = tuple(
+            achievement for achievement in achievements if achievement.id not in known_ids
+        )
+        if not new_items:
+            return self
+        combined = self.achievements + new_items
+        combined = tuple(sorted(combined, key=lambda item: item.unlocked_tick))
+        return replace(self, achievements=combined)
+
     def to_dict(self) -> Dict[str, Any]:
         return {
             "tick": self.tick,
@@ -227,12 +249,33 @@ class GameState:
             "team": self.team.to_dict(),
             "products": [product.to_dict() for product in self.products],
             "research": self.research.to_dict(),
+            "achievements": [
+                {
+                    "id": achievement.id,
+                    "name": achievement.name,
+                    "description": achievement.description,
+                    "unlocked_tick": achievement.unlocked_tick,
+                }
+                for achievement in self.achievements
+            ],
         }
 
     @classmethod
     def from_dict(cls, payload: Mapping[str, Any]) -> "GameState":
+        from ki_dev_tycoon.achievements import AchievementSnapshot
+
         products_payload: Iterable[Mapping[str, Any]] = payload.get("products", [])
         products = tuple(ProductState.from_dict(raw) for raw in products_payload)
+        achievements_payload: Iterable[Mapping[str, Any]] = payload.get("achievements", [])
+        achievements = tuple(
+            AchievementSnapshot(
+                id=str(raw["id"]),
+                name=str(raw["name"]),
+                description=str(raw.get("description", "")),
+                unlocked_tick=int(raw["unlocked_tick"]),
+            )
+            for raw in achievements_payload
+        )
         return cls(
             tick=int(payload["tick"]),
             cash=float(payload["cash"]),
@@ -240,4 +283,5 @@ class GameState:
             team=TeamState.from_dict(payload.get("team", {})),
             products=products,
             research=ResearchState.from_dict(payload.get("research", {})),
+            achievements=achievements,
         )
