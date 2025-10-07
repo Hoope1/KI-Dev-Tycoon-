@@ -1,0 +1,7 @@
+        Tick 10         
+Cash            €239,121
+Daily revenue    €46,169
+Burn rate             €0
+Reputation          60.1
+Total adoption     1,481
+Average quality     0.75
