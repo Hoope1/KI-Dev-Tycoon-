@@ -1,4 +1,5 @@
 import pytest
+from hypothesis import given, strategies as st
 
 from ki_dev_tycoon.core.rng import RandomSource
 
@@ -40,3 +41,19 @@ def test_random_source_choice_requires_values() -> None:
 
     with pytest.raises(ValueError):
         rng.choice([])
+
+
+@given(
+    st.integers(min_value=0, max_value=2**32 - 1),
+    st.integers(min_value=0, max_value=10),
+    st.integers(min_value=1, max_value=5),
+)
+def test_random_source_randint_property(seed: int, lower: int, span: int) -> None:
+    upper = lower + span
+    rng_a = RandomSource(seed=seed)
+    rng_b = RandomSource(seed=seed)
+
+    draws_a = [rng_a.randint(lower, upper) for _ in range(10)]
+    draws_b = [rng_b.randint(lower, upper) for _ in range(10)]
+
+    assert draws_a == draws_b

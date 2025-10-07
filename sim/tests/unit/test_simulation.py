@@ -1,4 +1,5 @@
 from ki_dev_tycoon.app import SimulationConfig, run_simulation
+from ki_dev_tycoon.core import TickClock, RandomSource
 
 
 def test_simulation_returns_expected_snapshot() -> None:
@@ -32,3 +33,29 @@ def test_simulation_requires_positive_ticks() -> None:
         assert "at least one tick" in str(exc)
     else:  # pragma: no cover - defensive guard
         raise AssertionError("Simulation should require positive ticks")
+
+
+def test_simulation_accepts_custom_factories() -> None:
+    config = SimulationConfig(
+        ticks=2,
+        seed=7,
+        daily_active_users=100,
+        arp_dau=0.2,
+        operating_costs=10.0,
+    )
+
+    created_seeds: list[int] = []
+
+    def clock_factory() -> TickClock:
+        return TickClock()
+
+    def rng_factory(seed: int) -> RandomSource:
+        created_seeds.append(seed)
+        return RandomSource(seed=seed)
+
+    result = run_simulation(
+        config, clock_factory=clock_factory, rng_factory=rng_factory
+    )
+
+    assert result.final_tick == 2
+    assert created_seeds == [config.seed]
