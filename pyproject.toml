@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "ki-dev-tycoon-monorepo"
+version = "0.1.0"
+description = "Workspace configuration for the KI Dev Tycoon simulation and UI packages."
+authors = ["KI Dev Tycoon Team <dev@ki-dev-tycoon.example>"]
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[tool.poetry.workspace]
+members = ["sim", "app"]
+
+[build-system]
+requires = ["poetry-core>=1.8.0"]
+build-backend = "poetry.core.masonry.api"

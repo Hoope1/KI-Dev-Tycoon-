@@ -54,7 +54,20 @@ app/
 
 - **Entwicklungsmodus:** `poetry run ki-ui dev` → startet Textual-App mit Hot-Reload.
 - **Spielmodus:** `poetry run ki-ui play --save-slot 1` → lädt Savegame und startet den Sim-Loop.
-- **Headless-Autoplay:** `poetry run ki-ui autoplay --days 365 --seed 42` → nutzt Textual Dummy-Driver für automatisierte Tests.
+- **Headless-Autoplay:** `poetry run ki-ui autoplay --ticks 365 --seed 42` → nutzt Textual Dummy-Driver für automatisierte Tests.
+
+### Navigationsstruktur & Dialoge
+
+Die Textual-App stellt sechs Hauptbereiche bereit, die über eine horizontale Navigationsleiste (oder via Tastenkürzel `1`–`6`) erreichbar sind:
+
+1. **Dashboard** – KPI-Panel, Zeitreihenübersicht und Eventlog.
+2. **Team** – Rollenübersicht, Skill-Level sowie Recruiting-Events.
+3. **Forschung** – Aktiver Forschungsknoten, Fortschritt und Backlog.
+4. **Produkte** – Portfolio-Metriken, Durchschnittsqualität und Ereignisse.
+5. **Markt** – Segment-Adoption, TAM und Nachfragekennzahlen.
+6. **Events** – Chronologisches Log der Simulation.
+
+Mit `Ctrl+P` öffnet sich der Theme-Dialog. Hier können Light/Dark-Mode und ein farbenblindenfreundlicher Akzentmodus umgeschaltet werden. Änderungen werden sofort auf alle Screens angewendet.
 
 ## Build Pipeline
 
@@ -76,6 +89,8 @@ Das Skript kapselt alle Schritte (Assets bündeln, virtuelle Env einbetten, Stea
 - **mypy:** `poetry run mypy app/src`
 - **Linting:** `poetry run ruff check app/src app/tests`
 - **UI-Recording:** `poetry run ki-ui record --script scripts/demo_script.yaml`
+
+Die Snapshot-Tests verwenden `textual.testing` und vergleichen das KPI-Panel mit einem gespeicherten Referenz-Rendering (`app/tests/__snapshots__/dashboard_kpis.txt`). Bei UI-Änderungen kann der Snapshot über `poetry run pytest app/tests --snapshot-update` aktualisiert werden.
 
 ## Lokale API (optional)
 
