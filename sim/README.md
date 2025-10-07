@@ -1,14 +1,14 @@
 # KI Dev Tycoon – Simulation Kernel (Python Support Stack)
 
-Dieses Verzeichnis enthält den deterministischen Python-Simulationskern, der für Balancing-Experimente, Property-Tests und Tooling rund um den Steam-MVP von **KI Dev Tycoon** eingesetzt wird. Die produktive Implementierung erfolgt laut [`Zusatz.md`](../Zusatz.md) in Unity/C#, doch der Python-Stack bleibt für schnelle Iterationen, Datenexporte und Regressionstests bestehen.
+Dieses Verzeichnis enthält den deterministischen Python-Simulationskern, der für Balancing-Experimente, Property-Tests, UI-Anbindung und Tooling rund um den Steam-MVP von **KI Dev Tycoon** eingesetzt wird. Laut [`Zusatz.md`](../Zusatz.md) bildet dieser Kernel gemeinsam mit dem Textual-Frontend das vollständige Produkt.
 
 ## Aktueller Stand
 
 - Paketstruktur mit Poetry (`sim/pyproject.toml`).
 - Deterministische Zufallsquelle (`RandomSource`) und Tick-Zeitgeber (`TickClock`).
-- Vereinfachte Finanzsimulation inklusive Reputationstracking.
+- Ökonomische Module (Cashflow, Nachfrage, Reputation) + Forschung/Hiring.
 - CLI-Befehl `ki-sim` zur Ausführung deterministischer Beispielsimulationen.
-- Unit- und Property-Tests für RNG, Simulation und Persistenz.
+- Unit-, Property- und Integrationstests für RNG, Simulation, Persistenz.
 
 ## Installation
 
@@ -27,9 +27,9 @@ poetry run ki-sim --ticks 30 --seed 42 \
 
 Das Kommando gibt einen JSON-Snapshot mit Kapital- und Reputationswerten auf stdout aus.
 
-## API-Adapter (Preview)
+## API-Adapter (optional)
 
-Der optionale FastAPI-Adapter stellt unter `/state` deterministische Dummy-States bereit. Damit lassen sich UI-Prototypen oder Analyse-Tools speisen, bis der Unity-Kernel (siehe `Zusatz.md`) voll funktionsfähig ist.
+Der optionale FastAPI-Adapter stellt unter `/state` deterministische States bereit. Damit lassen sich UI-Prototypen, externe Tools oder Mods anbinden.
 
 ```bash
 poetry run uvicorn ki_dev_tycoon.api.app:app --reload
@@ -43,12 +43,15 @@ Die Antwortstruktur wird über Pydantic-DTOs in `ki_dev_tycoon/api/dto.py` besch
 
 ```bash
 poetry run pytest -q
+poetry run pytest --cov=ki_dev_tycoon --cov-report=term-missing
+poetry run mypy src
 ```
 
-Weitere Linting- und Typprüfungen können gemäß `pyproject.toml` ausgeführt werden. Erkenntnisse aus den Python-Simulationen sind regelmäßig mit den Vorgaben aus `Zusatz.md` und den C#-Implementierungen zu synchronisieren (Seeds, KPIs, Formeln).
+Weitere Linting- und Typprüfungen können gemäß `pyproject.toml` und `noxfile.py` ausgeführt werden. Erkenntnisse aus den Simulationen sind regelmäßig mit den Vorgaben aus `Zusatz.md` und den UI/Build-Anforderungen zu synchronisieren (Seeds, KPIs, Formeln).
 
 ## Code-Qualität & Automatisierung
 
-- `pre-commit install` aktiviert lokale Hooks (Black, isort, Ruff, mypy, pytest).
+- `pre-commit install` aktiviert lokale Hooks (black, isort, ruff, mypy, pytest).
 - `nox -l` listet verfügbare Sessions.
 - `nox -s lint typecheck tests` führt alle Kernprüfungen aus.
+- `nox -s build` erzeugt PyInstaller-Smoke-Builds (siehe `app/tools`).
