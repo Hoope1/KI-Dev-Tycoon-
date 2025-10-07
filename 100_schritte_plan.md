@@ -8,7 +8,7 @@ Phasen: **Preflight (1–10)** · **W1 – Projekt & Kernel (11–25)** · **W2 
 
 ## Preflight & Governance (1–10)
 
-1. [ ] Budget-Obergrenze (≤ €500) bestätigen, Ausgaben-Tracker anlegen.
+1. [x] Budget-Obergrenze (≤ €500) bestätigen, Ausgaben-Tracker anlegen. (siehe `docs/preflight/`)
 2. [ ] Steam-Account-Status prüfen (Partner-Programm aktiv, Zahlungsdaten hinterlegt).
 3. [ ] Unity 6 LTS (6000.x) via Hub installieren; Projekteinstellungen für Windows x64 vorbereiten.
 4. [ ] Repository-Setup überprüfen: `Zusatz.md` als Source of Truth referenzieren, Legacy-Dokumente kennzeichnen.
