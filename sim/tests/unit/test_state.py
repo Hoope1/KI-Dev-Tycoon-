@@ -1,9 +1,22 @@
-from ki_dev_tycoon.core.state import GameState
+from ki_dev_tycoon.core.state import (
+    GameState,
+    ProductState,
+    ResearchState,
+    TeamMember,
+    TeamState,
+)
 from ki_dev_tycoon.core.time import FrozenTime, TickClock
 
 
+def _empty_state() -> GameState:
+    team = TeamState(members=(TeamMember(role_id="engineer", skill=0.3, training_progress=0.0),))
+    products = (ProductState(product_id="p", quality=0.4, adoption=10, price=5.0),)
+    research = ResearchState(unlocked=frozenset(), active=None, progress=0.0, backlog=())
+    return GameState(tick=0, cash=100.0, reputation=50.0, team=team, products=products, research=research)
+
+
 def test_game_state_returns_new_snapshot_on_updates() -> None:
-    state = GameState(tick=0, cash=100.0, reputation=50.0)
+    state = _empty_state()
     clock = TickClock()
 
     clock.advance(3)
@@ -18,15 +31,15 @@ def test_game_state_returns_new_snapshot_on_updates() -> None:
 
 
 def test_game_state_reputation_is_clamped() -> None:
-    state = GameState(tick=5, cash=0.0, reputation=5.0)
+    state = _empty_state()
 
-    assert state.apply_reputation_delta(-10.0).reputation == 0.0
+    assert state.apply_reputation_delta(-200.0).reputation == 0.0
     assert state.apply_reputation_delta(200.0).reputation == 100.0
 
 
 def test_game_state_serialization_roundtrip() -> None:
     frozen_time = FrozenTime(tick=12)
-    state = GameState(tick=0, cash=42.5, reputation=70.0).advance_tick(frozen_time)
+    state = _empty_state().advance_tick(frozen_time)
 
     payload = state.to_dict()
     restored = GameState.from_dict(payload)

@@ -1,0 +1,10 @@
+- id: enterprise_ai
+  name: Enterprise AI Platforms
+  tam: 12000
+  base_demand: 0.015
+  price_elasticity: 0.8
+- id: sme_automation
+  name: SME Automation Tools
+  tam: 8000
+  base_demand: 0.02
+  price_elasticity: 1.1

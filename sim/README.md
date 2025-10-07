@@ -29,10 +29,12 @@ poetry run ki-sim run --ticks 30 --seed 42 \
 
 Das Kommando gibt einen JSON-Snapshot mit Kapital- und Reputationswerten auf stdout aus oder schreibt die Datei via `--output` auf die Festplatte. Der zugrunde liegende `run_simulation`-Pfad injiziert Clock/RNG-Factories und nutzt die neue TickLoop.
 
-## Tick-Loop & Persistenz
+## Wirtschaft, Team & Persistenz
 
-- `ki_dev_tycoon.core.loop.TickLoop` kapselt den 0,5 s-Zeitakkumulator und erlaubt Tests/Simulationen mit deterministischen Zeitquellen.
-- Savegames werden als zstd-komprimierte JSON-Payload (`SavegameModel`) gespeichert und lassen sich über `encode_savegame`/`decode_savegame` roundtrippen.
+- Balancing-Assets (`assets/roles.yaml`, `products.yaml`, `markets.yaml`, `research.yaml`, `events.yaml`) werden über `ki_dev_tycoon.data.load_assets` geladen und gegen Pydantic-Schemata geprüft.
+- Neue Subsysteme für Hiring/Training (`ki_dev_tycoon.team`), Forschung (`ki_dev_tycoon.research`), Produktqualität (`ki_dev_tycoon.products`) und Nachfrage (`ki_dev_tycoon.economy.demand`) arbeiten mit eigenen deterministischen RNG-Streams.
+- Savegames (Version 2) serialisieren Teammitglieder, Produkte inklusive Qualität/Adoption sowie Forschungsfortschritt. Ältere Saves aus Version 1 werden beim Laden automatisch migriert.
+- `ki-sim export` erzeugt einen KPI-Zeitverlauf (Cash, Reputation, Umsatz, Adoption, Qualität) als CSV für 30 Ticks.
 
 ## API-Adapter (optional)
 

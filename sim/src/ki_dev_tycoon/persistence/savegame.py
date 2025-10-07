@@ -7,34 +7,147 @@ from pathlib import Path
 from typing import Any, Mapping
 
 import zstandard as zstd
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import BaseModel, Field, ValidationError, field_validator
 
-from ki_dev_tycoon.core.state import GameState
+from ki_dev_tycoon.core.state import (
+    GameState,
+    ProductState,
+    ResearchState,
+    TeamMember,
+    TeamState,
+)
 from ki_dev_tycoon.persistence.errors import SaveGameError
 from ki_dev_tycoon.persistence.migrations import CURRENT_VERSION, migrate_payload
 
 ZSTD_LEVEL = 7
 
 
+class TeamMemberModel(BaseModel):
+    role_id: str
+    skill: float = Field(ge=0.0, le=1.0)
+    training_progress: float = Field(ge=0.0, le=1.0)
+
+    @classmethod
+    def from_member(cls, member: TeamMember) -> "TeamMemberModel":
+        return cls(
+            role_id=member.role_id,
+            skill=member.skill,
+            training_progress=member.training_progress,
+        )
+
+    def to_member(self) -> TeamMember:
+        return TeamMember(
+            role_id=self.role_id,
+            skill=float(self.skill),
+            training_progress=float(self.training_progress),
+        )
+
+
+class TeamModel(BaseModel):
+    members: tuple[TeamMemberModel, ...]
+
+    @classmethod
+    def from_team(cls, team: TeamState) -> "TeamModel":
+        return cls(members=tuple(TeamMemberModel.from_member(m) for m in team.members))
+
+    def to_team(self) -> TeamState:
+        return TeamState(members=tuple(member.to_member() for member in self.members))
+
+
+class ProductModel(BaseModel):
+    product_id: str
+    quality: float = Field(ge=0.0, le=1.0)
+    adoption: int = Field(ge=0)
+    price: float = Field(ge=0.0)
+
+    @classmethod
+    def from_product(cls, product: ProductState) -> "ProductModel":
+        return cls(
+            product_id=product.product_id,
+            quality=product.quality,
+            adoption=product.adoption,
+            price=product.price,
+        )
+
+    def to_product(self) -> ProductState:
+        return ProductState(
+            product_id=self.product_id,
+            quality=float(self.quality),
+            adoption=int(self.adoption),
+            price=float(self.price),
+        )
+
+
+class ResearchModel(BaseModel):
+    unlocked: tuple[str, ...]
+    active: str | None
+    progress: float = Field(ge=0.0, le=1.0)
+    backlog: tuple[str, ...]
+
+    @classmethod
+    def from_state(cls, state: ResearchState) -> "ResearchModel":
+        return cls(
+            unlocked=tuple(sorted(state.unlocked)),
+            active=state.active,
+            progress=state.progress,
+            backlog=state.backlog,
+        )
+
+    def to_state(self) -> ResearchState:
+        return ResearchState(
+            unlocked=frozenset(self.unlocked),
+            active=self.active,
+            progress=float(self.progress),
+            backlog=tuple(self.backlog),
+        )
+
+
 class GameStateModel(BaseModel):
     """Pydantic representation of the immutable :class:`GameState`."""
 
     tick: int = Field(ge=0)
-    cash: float
+    cash: float = Field(ge=0.0)
     reputation: float = Field(ge=0.0, le=100.0)
+    team: TeamModel
+    products: tuple[ProductModel, ...]
+    research: ResearchModel
+
+    @field_validator("products")
+    @classmethod
+    def _ensure_quality_bounds(
+        cls, value: tuple[ProductModel, ...]
+    ) -> tuple[ProductModel, ...]:
+        for product in value:
+            if not 0.0 <= product.quality <= 1.0:
+                msg = f"Product {product.product_id} quality must be within [0,1]"
+                raise ValueError(msg)
+        return value
 
     @classmethod
     def from_state(cls, state: GameState) -> "GameStateModel":
-        """Create a model instance from the domain state."""
-
-        return cls.model_validate(state.to_dict())
+        return cls(
+            tick=state.tick,
+            cash=state.cash,
+            reputation=state.reputation,
+            team=TeamModel.from_team(state.team),
+            products=tuple(ProductModel.from_product(p) for p in state.products),
+            research=ResearchModel.from_state(state.research),
+        )
 
     def to_state(self) -> GameState:
-        """Convert the model back into the immutable domain object."""
-
         return GameState(
-            tick=int(self.tick), cash=float(self.cash), reputation=float(self.reputation)
+            tick=int(self.tick),
+            cash=float(self.cash),
+            reputation=float(self.reputation),
+            team=self.team.to_team(),
+            products=tuple(product.to_product() for product in self.products),
+            research=self.research.to_state(),
         )
+
+    def to_dict(self) -> Mapping[str, Any]:
+        """Return a deterministic mapping representation."""
+
+        return self.model_dump()
 
 
 class SavegameModel(BaseModel):
@@ -102,7 +215,9 @@ def decode_savegame(serialised: bytes) -> SavegameModel:
 def save_game(path: Path, state: GameState, *, compression_level: int = ZSTD_LEVEL) -> None:
     """Write ``state`` to ``path`` using the canonical save format."""
 
-    payload = encode_savegame(SavegameModel.from_state(state), compression_level=compression_level)
+    payload = encode_savegame(
+        SavegameModel.from_state(state), compression_level=compression_level
+    )
     path.write_bytes(payload)
 
 
