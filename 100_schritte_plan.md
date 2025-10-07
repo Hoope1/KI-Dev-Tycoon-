@@ -11,13 +11,13 @@ Phasen: **Preflight (1–10)** · **W1 – Projekt & Kernel (11–25)** · **W2 
 1. [x] Budget-Obergrenze (≤ €500) bestätigen, Ausgaben-Tracker anlegen. (siehe `docs/preflight/`)
 2. [ ] Steam-Account-Status prüfen (Partner-Programm aktiv, Zahlungsdaten hinterlegt).
 3. [ ] Unity 6 LTS (6000.x) via Hub installieren; Projekteinstellungen für Windows x64 vorbereiten.
-4. [ ] Repository-Setup überprüfen: `Zusatz.md` als Source of Truth referenzieren, Legacy-Dokumente kennzeichnen.
-5. [ ] Tooling-Stack festlegen (Rider/VS, Git, Git LFS falls nötig, Art-Tools, Audio-Tools) – ausschließlich kostenfrei.
-6. [ ] Naming- und Namespace-Konventionen definieren (`Core.Sim`, `Game.App`, `Game.UI`, `Platform.Steam`).
+4. [x] Repository-Setup überprüfen: `Zusatz.md` als Source of Truth referenzieren, Legacy-Dokumente kennzeichnen.
+5. [x] Tooling-Stack festlegen (Rider/VS, Git, Git LFS falls nötig, Art-Tools, Audio-Tools) – ausschließlich kostenfrei.
+6. [x] Naming- und Namespace-Konventionen definieren (`Core.Sim`, `Game.App`, `Game.UI`, `Platform.Steam`).
 7. [ ] Issue-/Task-Board für W1–W6 anlegen; Checkpoints aus `Zusatz.md` übertragen.
-8. [ ] Architektur-Risiken erfassen (Determinismus, Save-Migration, Steamworks) und Mitigations notieren.
-9. [ ] Test-Strategie definieren (Unit, Property, Headless-Runner, KPI-CSV) inkl. Seed-Plan.
-10. [ ] Release-Kalender mit Meilensteinen und Deadlines (W1–W6) veröffentlichen.
+8. [x] Architektur-Risiken erfassen (Determinismus, Save-Migration, Steamworks) und Mitigations notieren.
+9. [x] Test-Strategie definieren (Unit, Property, Headless-Runner, KPI-CSV) inkl. Seed-Plan.
+10. [x] Release-Kalender mit Meilensteinen und Deadlines (W1–W6) veröffentlichen.
 
 ---
 
