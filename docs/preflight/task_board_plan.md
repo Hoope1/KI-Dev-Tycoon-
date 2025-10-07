@@ -16,23 +16,23 @@ Da das tatsächliche GitHub-Projektboard außerhalb des Repos verwaltet wird, be
 
 ## Wöchentliche Milestones & Key Tasks
 - **W1 — Projekt & Kernel**
-  - Unity-Projekt erstellen, Tick-Loop + RNG implementieren, Save/Load, Steam-Bootstrap.
-  - Tasks: `Create Unity project`, `Implement TickLoop`, `Design RNG interface`, `Prototype SaveIO`, `SteamManager placeholder`.
+  - Poetry-Workspace einrichten, Tick-Loop + RNG implementieren, Save/Load, CI grün.
+  - Tasks: `Workspace setup`, `Implement tick loop`, `Event bus + RNG`, `Save schema v1`, `CI pipeline ready`.
 - **W2 — Daten & Ökonomie**
-  - ScriptableObjects, Hiring/Forschung/Training Systeme, Ökonomie-Konstanten, Events.
-  - Tasks: `Define ScriptableObject defs`, `Implement research queue`, `Hiring generator`, `Economy constants`, `Event picker`.
+  - YAML-Assets, Hiring/Forschung/Training Systeme, Ökonomie-Konstanten, Events.
+  - Tasks: `Define asset schemas`, `Implement research queue`, `Hiring generator`, `Economy constants`, `Event picker`.
 - **W3 — UI First Pass**
-  - Canvas/Layout, Tab-Navigation, Greybox-Screens, Presenter-Layer, Localization setup.
-- **W4 — Steam & Content**
-  - Achievements, Rich Presence, Save-Versionierung, Store-Assets (Screenshots, Texte), Build-Skripte.
+  - Textual-App Grundgerüst, Tab-Navigation, Screens Greybox, Presenter-Layer, i18n Setup.
+- **W4 — Distribution & Content**
+  - Achievements, PyInstaller Spec, Save-Versionierung, Store-Assets (Screenshots, Texte), Build-Skripte.
 - **W5 — Polish & Beta**
-  - Balancing-Pass, Profiling, UI-Polish, Audio, Accessibility, Beta feedback.
+  - Balancing-Pass, Profiling, UI-/Audio-Polish, Accessibility, Beta-Feedback.
 - **W6 — Release**
-  - Final Build, Depot Upload, Pricing/Compliance, Launch Runbook, Hotfix Pfad.
+  - Finaler Build, Depot Upload, Pricing/Compliance, Launch Runbook, Hotfix Pfad.
 
 ## Checkpoints & Reporting
 - Wöchentliche Review-Notiz im Repo (`docs/reports/week_<n>.md`, später erstellen).
-- Offene Blocker (z. B. Steam-Account, Unity-Installation) im Board als Karten (`Blocker: Steam Partner check`).
+- Offene Blocker (z. B. Steam-Account, PyInstaller Code Signing) im Board als Karten (`Blocker: Steam Partner check`).
 - Jede Karte referenziert `Zusatz.md` Abschnitt + relevante Schritt-Nummer.
 
 > **Next Action:** Board im GitHub-Webinterface anlegen, Spalten & Karten laut Liste erstellen, anschließend Link im Repo (z. B. README/Docs) ergänzen.

@@ -1,6 +1,6 @@
 # Preflight Status — KI-Dev-Tycoon
 
-Diese Übersicht dokumentiert den Fortschritt der Preflight-Schritte aus dem `100_schritte_plan.md` und verweist auf zugehörige Artefakte. Alle Entscheidungen sind mit den Leitplanken aus `Zusatz.md` abgeglichen.
+Diese Übersicht dokumentiert den Fortschritt der Preflight-Schritte aus dem `100_schritte_plan.md` und verweist auf zugehörige Artefakte. Alle Entscheidungen sind mit den Leitplanken aus `Zusatz.md` (Python-only) abgeglichen.
 
 ## Schritt 1 — Budget-Obergrenze bestätigen & Ausgaben-Tracker anlegen
 - **Status:** Erledigt (2025-10-06)
@@ -15,11 +15,11 @@ Diese Übersicht dokumentiert den Fortschritt der Preflight-Schritte aus dem `10
 - **Aktion:** Beim nächsten Login im Steamworks-Dashboard bestätigen, dass Partner-Programm aktiv ist und Zahlungsdaten verifiziert sind; Screenshot + Kurznotiz im Repo hinterlegen
 - **Risiko:** Verzögerte Auszahlung/Veröffentlichung falls Status unklar; frühzeitig erledigen
 
-## Schritt 3 — Unity 6 LTS (6000.x) via Hub installieren; Windows-x64-Target vorbereiten
-- **Status:** Blockiert (Unity-Installation außerhalb des Containers nötig)
-- **Letzter Check:** 2025-10-06 – Unity Hub Installation muss lokal erfolgen, kein Zugriff innerhalb des Repos
-- **Aktion:** Unity Hub starten, Unity 6.0 LTS (6000.x) installieren, Windows x64-Build-Support hinzufügen; Installationsnachweis (Version, Pfad) im Repo dokumentieren
-- **Risiko:** Ohne Editor/Build-Support können spätere Schritte (Bootstrap-Szene, Builds) nicht gestartet werden
+## Schritt 3 — Python 3.11.8 & Poetry ≥ 1.8 installieren und Umgebung konfigurieren
+- **Status:** Blockiert (Installation außerhalb des Containers nötig)
+- **Letzter Check:** 2025-10-06 – Lokale Maschine benötigt aktualisierte Python-/Poetry-Version
+- **Aktion:** Python 3.11.8 + Poetry 1.8.x installieren, `poetry env use` auf das Projekt zeigen, Versionen in `docs/preflight/tooling_stack.md` ergänzen
+- **Risiko:** Ohne korrekte Umgebung können spätere Schritte (Poetry Workspace, PyInstaller) nicht durchgeführt werden
 
 ## Schritt 4 — Repository-Setup prüfen und `Zusatz.md` als Source of Truth referenzieren
 - **Status:** Erledigt (2025-10-06)
@@ -30,13 +30,13 @@ Diese Übersicht dokumentiert den Fortschritt der Preflight-Schritte aus dem `10
 ## Schritt 5 — Tooling-Stack festlegen (nur kostenfreie Tools)
 - **Status:** Erledigt (2025-10-06)
 - **Dokumentation:** [`tooling_stack.md`](./tooling_stack.md) listet Entwicklungs-, Art-, Audio- und Produktivitäts-Tools, alle lizenzkostenfrei gemäß `Zusatz.md`
-- **Highlights:** VS Code + Visual Studio Community für C#/Unity, Git/GitHub Desktop, Krita/GIMP/Inkscape, Audacity, LibreOffice, draw.io, Unity Hub, Poetry/Nox
+- **Highlights:** VS Code/PyCharm, Git/GitHub Desktop, Krita/GIMP/Inkscape, Audacity, LibreOffice, draw.io, OBS, Poetry/nox
 - **Risiko:** Niedrig – regelmäßige Updates prüfen, kostenpflichtige Erweiterungen vermeiden
 
 ## Schritt 6 — Naming- und Namespace-Konventionen definieren
 - **Status:** Erledigt (2025-10-06)
-- **Dokumentation:** [`naming_conventions.md`](./naming_conventions.md) beschreibt Struktur für `Core.Sim`, `Game.App`, `Game.UI`, `Platform.Steam` sowie Unity-Asset-Benennung
-- **Highlights:** Einheitliche Namespaces, Ordner-Spiegelung unter `Assets/`, Prefab- und ScriptableObject-Schemata, Coding-Standards
+- **Dokumentation:** [`naming_conventions.md`](./naming_conventions.md) beschreibt Struktur für `ki_dev_tycoon.core/ui/api/cli`, Assets & Tests
+- **Highlights:** Einheitliche Paketstruktur, gespiegelt Tests, Themes/Widgets-Konventionen, Coding-Standards
 - **Risiko:** Niedrig – künftige Abweichungen benötigen explizite ADR
 
 ## Schritt 7 — Issue-/Task-Board für W1–W6 anlegen
@@ -47,15 +47,15 @@ Diese Übersicht dokumentiert den Fortschritt der Preflight-Schritte aus dem `10
 
 ## Schritt 8 — Architektur-Risiken erfassen & Mitigations notieren
 - **Status:** Erledigt (2025-10-06)
-- **Dokumentation:** [`risks.md`](./risks.md) fasst Determinismus, Save-Migration, Steamworks, Offline-Progress, Budget & QA-Risiken zusammen
+- **Dokumentation:** [`risks.md`](./risks.md) fasst Determinismus, Save-Migration, PyInstaller, Steamworks, Offline-Progress, Budget & QA-Risiken zusammen
 - **Highlights:** Tabelle mit Beschreibung, Auswirkung, Mitigation; Follow-up-Prozess für Reviews
 - **Risiko:** Mittel – Aktualisierung erforderlich, initiale Abdeckung vorhanden
 
 ## Schritt 9 — Test-Strategie definieren (inkl. Seed-Plan)
 - **Status:** Erledigt (2025-10-06)
-- **Dokumentation:** [`test_strategy.md`](./test_strategy.md) beschreibt Testebenen (Unit, Property, Headless, PlayMode) und Seed-Plan
-- **Highlights:** Seed-Zuordnung (`1337`, `7331`, `9001`, `424242`, `20251006`), KPI-CSV-Export, Reporting-Fluss
-- **Risiko:** Mittel – Umsetzung erfordert Einrichtung der Testprojekte in W1
+- **Dokumentation:** [`test_strategy.md`](./test_strategy.md) beschreibt Testebenen (Unit, Property, Headless, Textual, API) und Seed-Plan
+- **Highlights:** Seed-Zuordnung (`1337`, `7331`, `9001`, `424242`, `20251006`, `5150`), KPI-CSV-Export, Reporting-Fluss
+- **Risiko:** Mittel – Umsetzung erfordert Einrichtung der Testpakete in W1
 
 ## Schritt 10 — Release-Kalender mit Meilensteinen & Deadlines veröffentlichen
 - **Status:** Erledigt (2025-10-06)
@@ -65,4 +65,4 @@ Diese Übersicht dokumentiert den Fortschritt der Preflight-Schritte aus dem `10
 
 ## Offene Punkte
 - Schritt 2 bleibt Voraussetzung für die Freigabe von Schritt 3.
-- Nach Abschluss der externen Checks (Steam, Unity) Status hier aktualisieren und den `100_schritte_plan.md` synchronisieren.
+- Nach Abschluss der externen Checks (Steam, Python-Setup) Status hier aktualisieren und den `100_schritte_plan.md` synchronisieren.

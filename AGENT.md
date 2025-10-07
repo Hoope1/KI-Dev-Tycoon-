@@ -8,7 +8,7 @@ Siehe Gameplan.md **und** 100_schritte_plan.md!
 
 ## Projektüberblick
 
-**Repository‑Scope:** Backend‑/Simulations‑Kernel des Mobile‑Spiels „KI‑Dev‑Tycoon“. Die Spiel‑Logik (Wirtschaft, Forschung, Events, Idle‑Progression) läuft deterministisch in Python; ein separater Client (z. B. Unity/Godot oder Web) bindet diesen Kernel via API/SDK ein.
+**Repository‑Scope:** Vollständiges Python-Spiel (Simulation + Textual-Frontend + Tooling) für „KI‑Dev‑Tycoon“. Die Spiel‑Logik (Wirtschaft, Forschung, Events, Idle‑Progression) läuft deterministisch in Python; UI, CLI und optionale API greifen ausschließlich auf dieselben Pakete (`ki_dev_tycoon.*`) zu. Legacy-Prototypen (Unity/Godot) sind archiviert und werden nicht weitergeführt.
 
 **Technologie:** Python ≥ 3.11 · Poetry · FastAPI (optionales API‑Gateway) · Pydantic v2 · pytest · Hypothesis · mypy (strict) · ruff · black · isort · pre‑commit · nox · GitHub Actions · pip‑audit · bandit.
 
@@ -46,66 +46,24 @@ poetry run pip-audit && poetry run bandit -r src
 
 ```
 /README.md                 # Monorepo-Übersicht & Einstieg
-/client/
-  README.md               # Status & To-dos für den (zukünftigen) Unity/Godot-Client
+/Zusatz.md                 # Source of truth (Steam-MVP, Python-only)
+/app/
+  README.md               # Textual-Frontend & Build-Anweisungen
+  src/ki_dev_tycoon/ui/   # Screens, Widgets, Themes, Presenter-Schicht
+  src/ki_dev_tycoon/cli/  # Typer-Kommandos (`ki-ui`, `ki-admin`)
+  tools/                  # PyInstaller/Steam Upload Scripts
 /sim/
-  README.md               # Technische Doku des Python-Simulationskerns
-  .pre-commit-config.yaml # Git-Hooks (Black, Ruff, isort, mypy, pytest)
-  noxfile.py              # Automationssessions (lint, typecheck, tests)
-  pyproject.toml          # Build, Tools, Black/Ruff/Mypy/pytest-Config
+  README.md               # Technische Doku des Simulationskerns
+  .pre-commit-config.yaml # Git-Hooks (black, ruff, isort, mypy, pytest)
+  noxfile.py              # Automationssessions (lint, typecheck, tests, build)
+  pyproject.toml          # Build, Tools, Formatter/Linter/Test-Konfiguration
   poetry.lock
-  src/
-    ki_dev_tycoon/
-      __init__.py
-      app.py              # CLI-Entrypoint (tycoon-Loop, Szenario-Runner)
-      config/
-        loader.py         # Laden/Validieren von YAML/TOML-Konfigurationen
-        schemas.py        # Pydantic-Modelle für Config/Assets
-      core/
-        time.py           # Tick-/Kalender-System, Zeitleisten (Ären/Hypes)
-        rng.py            # RandomSource, Seeds, Repro-Utilities
-        events.py         # Ereignisbus, Zufalls-/Skript-Events (z. B. KI-Winter)
-        state.py          # GameState, Serialisierung, Snapshots
-      economy/
-        cashflow.py       # Einnahmen/Kosten, Schulden, Zinsen, CAPEX/OPEX
-        pricing.py        # Preis- und Nachfragefunktionen
-        kpis.py           # Metriken (MAU, Retention, Reputation)
-      research/
-        tech_tree.py      # Forschungsbaum (Transformer, RL, Gen-KI …)
-        unlocks.py        # Gates/Abhängigkeiten
-        training.py       # Daten/Compute/Infra-Invest & Lernkurven-Sim
-      projects/
-        catalogue.py      # Projekt-/Produkt-Typen (Chatbot, Vision, AV …)
-        simulator.py      # Erfolgschancen, Qualität, Time-to-Market
-        licensing.py      # Produkt vs. API/Lizenz-Erlöse
-      team/
-        people.py         # Rollen/Skills (DS/DE/Research/Ethics)
-        productivity.py   # Synergien, Training, Burnout/Fokus
-        hiring.py         # Recruiting-Pipelines, Kosten
-      ethics/
-        compliance.py     # Datenschutz, Bias-Risiko, Regulatorik-Ereignisse
-        reputation.py     # Reputationseffekte auf Nachfrage/Verträge
-      market/
-        trends.py         # Trend-Signale, Hype-Zyklen
-        marketing.py      # Kampagnen, Investor-Verhandlungen
-      idle/
-        offline.py        # Offline-Progression (Δt-Verarbeitung, Caps)
-      api/
-        app.py            # FastAPI-App (Read-Only Sim-Adapter)
-        dto.py            # Pydantic DTOs (stabile API-Schicht)
-      persistence/
-        savegame.py       # Save/Load (JSON), Migrations
-      utils/
-        validation.py     # Eingabeprüfungen, Fehlerklassen
-        logging.py        # Strukturierte Logs
-  tests/
-    unit/                 # Modultests, schnelle Ausführung
-    property/             # Hypothesis-Suiten (Ökonomie/Event-Invarianten)
-    integration/          # End-to-End (Szenario-Seeds)
-    api/                  # Contract-Tests für FastAPI
-    data/                 # Testdaten, Golden-Snapshots
+  src/ki_dev_tycoon/      # Kernpaket (Core, Data, API, Persistence, Utils)
+  tests/                  # Unit, Property, Integration, API, Snapshot
   docs/                   # Simulationsspezifische Dokumentation & Artefakte
+/assets/                  # YAML/JSON Balancing-Daten (validiert via Schemas)
 /benchmarks/              # pytest-benchmark-Szenarien (optional)
+/client/                  # Legacy-Prototypen (Godot/Unity) – nicht aktiv nutzen
 ```
 
 **Nicht editieren (durch Agenten):** `/assets/**`‑Rohdateien, Binär‑Artefakte, generierte Coverage‑/Cache‑Ordner. Änderungen an Assets **erfordern** Snapshot‑Updates & Balancing‑Checks (siehe unten).
