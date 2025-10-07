@@ -9,6 +9,7 @@ from typing import Any, Mapping
 import zstandard as zstd
 from pydantic import BaseModel, Field, ValidationError, field_validator
 
+from ki_dev_tycoon.achievements import AchievementSnapshot
 from ki_dev_tycoon.core.state import (
     GameState,
     ProductState,
@@ -102,6 +103,30 @@ class ResearchModel(BaseModel):
         )
 
 
+class AchievementModel(BaseModel):
+    id: str
+    name: str
+    description: str
+    unlocked_tick: int = Field(ge=0)
+
+    @classmethod
+    def from_snapshot(cls, snapshot: AchievementSnapshot) -> "AchievementModel":
+        return cls(
+            id=snapshot.id,
+            name=snapshot.name,
+            description=snapshot.description,
+            unlocked_tick=snapshot.unlocked_tick,
+        )
+
+    def to_snapshot(self) -> AchievementSnapshot:
+        return AchievementSnapshot(
+            id=self.id,
+            name=self.name,
+            description=self.description,
+            unlocked_tick=int(self.unlocked_tick),
+        )
+
+
 class GameStateModel(BaseModel):
     """Pydantic representation of the immutable :class:`GameState`."""
 
@@ -111,6 +136,7 @@ class GameStateModel(BaseModel):
     team: TeamModel
     products: tuple[ProductModel, ...]
     research: ResearchModel
+    achievements: tuple[AchievementModel, ...] = ()
 
     @field_validator("products")
     @classmethod
@@ -132,6 +158,10 @@ class GameStateModel(BaseModel):
             team=TeamModel.from_team(state.team),
             products=tuple(ProductModel.from_product(p) for p in state.products),
             research=ResearchModel.from_state(state.research),
+            achievements=tuple(
+                AchievementModel.from_snapshot(snapshot)
+                for snapshot in state.achievements
+            ),
         )
 
     def to_state(self) -> GameState:
@@ -142,6 +172,9 @@ class GameStateModel(BaseModel):
             team=self.team.to_team(),
             products=tuple(product.to_product() for product in self.products),
             research=self.research.to_state(),
+            achievements=tuple(
+                achievement.to_snapshot() for achievement in self.achievements
+            ),
         )
 
     def to_dict(self) -> Mapping[str, Any]:

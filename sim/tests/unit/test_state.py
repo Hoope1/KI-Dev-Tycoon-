@@ -1,3 +1,4 @@
+from ki_dev_tycoon.achievements import AchievementSnapshot
 from ki_dev_tycoon.core.state import (
     GameState,
     ProductState,
@@ -40,8 +41,31 @@ def test_game_state_reputation_is_clamped() -> None:
 def test_game_state_serialization_roundtrip() -> None:
     frozen_time = FrozenTime(tick=12)
     state = _empty_state().advance_tick(frozen_time)
+    achievement = AchievementSnapshot(
+        id="first_cash",
+        name="Cashflow",
+        description="Reach 10k cash",
+        unlocked_tick=12,
+    )
+    state = state.add_achievements((achievement,))
 
     payload = state.to_dict()
     restored = GameState.from_dict(payload)
 
     assert restored == state
+
+
+def test_add_achievements_is_idempotent() -> None:
+    state = _empty_state()
+    achievement = AchievementSnapshot(
+        id="first_hire",
+        name="Recruiter",
+        description="Hire someone",
+        unlocked_tick=5,
+    )
+
+    updated = state.add_achievements((achievement,))
+    duplicated = updated.add_achievements((achievement,))
+
+    assert updated.achievements == (achievement,)
+    assert duplicated.achievements == (achievement,)

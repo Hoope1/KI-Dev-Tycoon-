@@ -4,7 +4,10 @@ from __future__ import annotations
 
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import Callable, Dict, List
+from typing import TYPE_CHECKING, Callable, Dict, List
+
+if TYPE_CHECKING:
+    from ki_dev_tycoon.achievements import AchievementSnapshot
 
 
 @dataclass(slots=True, frozen=True)
@@ -24,6 +27,14 @@ class TickProcessed(SimulationEvent):
     """Emitted after a simulation tick has finished processing."""
 
     tick: int
+
+
+@dataclass(slots=True, frozen=True)
+class AchievementUnlocked(SimulationEvent):
+    """Emitted whenever a new achievement has been unlocked."""
+
+    tick: int
+    achievement: AchievementSnapshot
 
 
 @dataclass(slots=True, frozen=True)

@@ -6,11 +6,13 @@ import logging
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Optional, Sequence
+from typing import Any, Callable, Optional, Sequence
 
 from pydantic import BaseModel, Field
 
+from ki_dev_tycoon.achievements import AchievementTracker, default_definitions
 from ki_dev_tycoon.core import (
+    AchievementUnlocked,
     EventBus,
     RandomSource,
     SimulationCompleted,
@@ -78,6 +80,13 @@ class SimulationResult(BaseModel):
     history: list[dict[str, float]] | None = Field(
         default=None,
         description="Optional per-tick KPI history captured during the simulation.",
+    )
+    achievements: list[dict[str, str | int]] = Field(
+        default_factory=list,
+        description="Unlocked achievements at the end of the simulation.",
+    )
+    state: dict[str, Any] = Field(
+        description="Final immutable game state snapshot as a dictionary."
     )
 
 
@@ -180,6 +189,8 @@ def run_simulation(
         products=products,
         research=research_state,
     )
+    achievement_tracker = AchievementTracker(default_definitions())
+    achievement_tracker.extend(state.achievements)
 
     sim_logger.info(
         "simulation.start", extra={"seed": config.seed, "ticks": config.ticks}
@@ -272,6 +283,15 @@ def run_simulation(
         jitter = (reputation_rng.random() - 0.5) * 0.2
         state = state.apply_reputation_delta(direction * 0.5 + jitter)
 
+        unlocked = achievement_tracker.evaluate(state)
+        if unlocked:
+            state = state.add_achievements(unlocked)
+            if event_bus is not None:
+                for achievement in unlocked:
+                    event_bus.publish(
+                        AchievementUnlocked(tick=state.tick, achievement=achievement)
+                    )
+
         if capture_history:
             total_adoption = sum(product.adoption for product in state.products)
             avg_quality = (
@@ -318,6 +338,8 @@ def run_simulation(
         cash=round(state.cash, 2),
         reputation=round(state.reputation, 2),
         history=history if capture_history else None,
+        achievements=[achievement.to_dict() for achievement in achievement_tracker.unlocked()],
+        state=state.to_dict(),
     )
 
 

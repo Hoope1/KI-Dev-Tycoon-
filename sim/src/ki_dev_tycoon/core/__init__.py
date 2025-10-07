@@ -1,6 +1,7 @@
 """Core infrastructure for deterministic simulation."""
 
 from .events import (
+    AchievementUnlocked,
     EventBus,
     SimulationCompleted,
     SimulationEvent,
@@ -22,4 +23,5 @@ __all__ = [
     "SimulationStarted",
     "TickProcessed",
     "SimulationCompleted",
+    "AchievementUnlocked",
 ]

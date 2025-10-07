@@ -17,6 +17,8 @@ def test_simulation_returns_expected_snapshot() -> None:
     assert result.cash >= 0.0
     assert 0 <= result.reputation <= 100
     assert result.history is None
+    assert result.state["tick"] == 5
+    assert isinstance(result.achievements, list)
 
 
 def test_simulation_history_capture() -> None:
@@ -33,6 +35,7 @@ def test_simulation_history_capture() -> None:
     assert result.history is not None
     assert len(result.history) == config.ticks
     assert all("cash" in row for row in result.history)
+    assert result.state["tick"] == config.ticks
 
 
 def test_simulation_requires_positive_ticks() -> None:

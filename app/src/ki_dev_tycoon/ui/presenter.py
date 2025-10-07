@@ -9,7 +9,9 @@ from typing import Iterable, Literal, Sequence
 
 import httpx
 
+from ki_dev_tycoon.achievements import AchievementTracker, default_definitions
 from ki_dev_tycoon.core.events import (
+    AchievementUnlocked,
     EventBus,
     SimulationCompleted,
     SimulationStarted,
@@ -20,11 +22,13 @@ from ki_dev_tycoon.core.state import GameState, ProductState, ResearchState, Tea
 from ki_dev_tycoon.core.time import TickClock
 from ki_dev_tycoon.data.loader import AssetBundle, load_assets
 from ki_dev_tycoon.economy import project_adoption
+from ki_dev_tycoon.platform import steam
 from ki_dev_tycoon.products import compute_quality
 from ki_dev_tycoon.research import progress_research
 from ki_dev_tycoon.team import ensure_minimum_staff, train_team
 
 from .viewmodels import (
+    AchievementViewModel,
     DashboardViewModel,
     EventLogEntry,
     KpiSnapshot,
@@ -59,7 +63,10 @@ class SimulationPresenter:
         self.config = config or SimulationPresenterConfig()
         self._event_bus = EventBus()
         self._event_bus.subscribe(TickProcessed, self._record_tick)
+        self._event_bus.subscribe(AchievementUnlocked, self._on_achievement_unlocked)
         self._observed_ticks: list[int] = []
+        self._achievement_tracker = AchievementTracker(default_definitions())
+        self._recent_achievements: list[AchievementViewModel] = []
 
     @property
     def event_bus(self) -> EventBus:
@@ -89,6 +96,8 @@ class SimulationPresenter:
         assets = load_assets(self._resolve_asset_root(config.asset_root))
         clock = TickClock()
         rng = RandomSource(config.seed)
+        self._achievement_tracker = AchievementTracker(default_definitions())
+        self._recent_achievements.clear()
         self._event_bus.publish(SimulationStarted(seed=config.seed))
 
         products = tuple(
@@ -160,6 +169,14 @@ class SimulationPresenter:
             jitter = (tick_rng.random() - 0.5) * 0.2
             state = state.apply_reputation_delta(direction * 0.5 + jitter)
 
+            unlocked = self._achievement_tracker.evaluate(state)
+            if unlocked:
+                state = state.add_achievements(unlocked)
+                for achievement in unlocked:
+                    self._event_bus.publish(
+                        AchievementUnlocked(tick=state.tick, achievement=achievement)
+                    )
+
             total_adoption = sum(product.adoption for product in state.products)
             avg_quality = (
                 sum(product.quality for product in state.products) / len(state.products)
@@ -203,6 +220,15 @@ class SimulationPresenter:
         research = self._build_research_view(state.research, assets)
         products_vm = self._build_product_view(state.products, assets)
         markets = self._build_market_view(state.products, assets)
+        achievement_models = tuple(
+            AchievementViewModel(
+                achievement_id=achievement.id,
+                name=achievement.name,
+                description=achievement.description,
+                unlocked_tick=achievement.unlocked_tick,
+            )
+            for achievement in state.achievements
+        )
 
         return UiState(
             dashboard=dashboard,
@@ -211,6 +237,7 @@ class SimulationPresenter:
             products=products_vm,
             markets=markets,
             events=tuple(events[-40:]),
+            achievements=achievement_models,
         )
 
     async def _fetch_from_api(self, base_url: str) -> UiState:
@@ -250,6 +277,15 @@ class SimulationPresenter:
         )
         products_vm = self._build_product_view(tuple(), assets)
         markets = self._build_market_view(tuple(), assets)
+        achievement_models = tuple(
+            AchievementViewModel(
+                achievement_id=str(entry["id"]),
+                name=str(entry["name"]),
+                description=str(entry.get("description", "")),
+                unlocked_tick=int(entry["unlocked_tick"]),
+            )
+            for entry in payload.get("achievements", [])
+        )
         return UiState(
             dashboard=dashboard,
             team=team,
@@ -263,6 +299,7 @@ class SimulationPresenter:
                     description="State retrieved from FastAPI backend",
                 ),
             ),
+            achievements=achievement_models,
         )
 
     def _build_dashboard(self, history: Sequence[KpiSnapshot]) -> DashboardViewModel:
@@ -495,6 +532,16 @@ class SimulationPresenter:
 
     def _record_tick(self, event: TickProcessed) -> None:
         self._observed_ticks.append(event.tick)
+
+    def _on_achievement_unlocked(self, event: AchievementUnlocked) -> None:
+        view_model = AchievementViewModel(
+            achievement_id=event.achievement.id,
+            name=event.achievement.name,
+            description=event.achievement.description,
+            unlocked_tick=event.achievement.unlocked_tick,
+        )
+        self._recent_achievements.append(view_model)
+        steam.unlock_achievement(event.achievement.id)
 
     def _resolve_asset_root(self, configured: Path | None) -> Path:
         if configured is not None:
